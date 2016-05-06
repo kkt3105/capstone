@@ -3,6 +3,17 @@ var connection = require('../db.js').getConnection();
 var TABLE = 'user';
 
 
+exports.test = function (req, res){
+        console.log(req.body.memberID);
+        console.log(req.body.memberPassword);
+
+        if(req.body.memberPassword==0){
+            console.log("sucess");
+        }
+        res.end();
+
+}
+
 exports.signOut = function(req, res){
 
     var jsonData={};
@@ -55,9 +66,40 @@ exports.signUp = function(req, res){
       throw err;
     }
     var signUp=false;
+
     if(db.length != 0){
+        signUp=false;
       console.log('ID:'+ req.body.memberID +' does already exist!');
-    }else{
+    }
+    else if(req.body.memberID.length > 15 ||
+        req.body.memberPassword.length > 15 ||
+        req.body.memberType.length > 15 ||
+        req.body.memberName.length > 20 ||
+        req.body.meberAge > 999 ||
+        req.body.memberGender.length > 4 ||
+        req.body.memberAddress.length > 100 ||
+        req.body.memberTel.length > 13
+    ){
+      signUp=false;
+      console.log('Input is too long!');
+    }
+    else if(req.body.memberID.length == 0 ||
+        req.body.memberPassword.length == 0 ||
+        req.body.memberType.length == 0 ||
+        req.body.memberName.length == 0 ||
+        req.body.meberAge <= 0 ||
+        req.body.memberGender.length == 0 ||
+        req.body.memberAddress.length == 0 ||
+        req.body.memberTel.length == 0
+    ){
+      signUp=false;
+      console.log('Input should not be empty!');
+  }else {
+      signUp = true;
+  }
+
+
+    if(signUp){
       var post = {
           login_id:req.body.memberID,
           login_pw:req.body.memberPassword,
@@ -68,16 +110,19 @@ exports.signUp = function(req, res){
           user_address:req.body.memberAddress,
           user_tel:req.body.memberTel,
       };
+
       connection.query('INSERT INTO user SET ?', post, function(err, db2){
         if(err){
-          console.log('ERROR! : '+ err);
-          throw err;
+            signUp = false;
+            console.log('ERROR! : '+ err);
+            throw err;
         }else{
-        signUp=true;
-        console.log('Successfully signed up!');
+            signUp=true;
+            console.log('Successfully signed up!');
         }
       });
     }
+
     var jsonData={};
     if(signUp){
         jsonData.signup_status=true;

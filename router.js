@@ -11,4 +11,5 @@ exports.route = function(app) {
   app.post('/Sign_Out', member.signOut);
   app.post('/Sign_In', member.signIn);
   app.post('/Sign_Up', member.signUp);
+  app.post('/test', member.test);
 };
