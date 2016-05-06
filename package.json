@@ -1,0 +1,13 @@
+{
+  "name": "catch_mind",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "ejs": "^2.3.3",
+    "express": "^3.21.2",
+    "mysql":"*"
+  }
+}

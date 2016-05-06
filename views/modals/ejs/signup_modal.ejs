@@ -1,0 +1,54 @@
+<div class="modal fade" id="signup_modal" tabindex="-1" role="dialog" aria-labelledby="signup_modal_label">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="signup_modal_label">
+                    Please Join Our Website!
+                </h4>
+      </div>
+      <form action="/Sign_Up" method="POST">
+          <div class="modal-body">
+              <div class="form-group">
+                  <label for="memberID" class="control-label">UserID:</label>
+                  <input type="text" class="form-control" id="memberID" name="memberID" placeholder="User ID" />
+              </div>
+              <div class="form-group">
+                  <label for="memberPassword" class="control-label">Password:</label>
+                  <input type="password" class="form-control" id="memberPassword" name="memberPassword" placeholder="Password" />
+              </div>
+              <div class="form-group">
+                  <label for="memberType" class="control-label">Type:</label>
+                  <input type="text" class="form-control" id="memberType" name="memberType" placeholder="Type" />
+              </div>
+              <div class="form-group">
+                  <label for="memberName" class="control-label">Name:</label>
+                  <input type="text" class="form-control" id="memberName" name="memberName" placeholder="Name" />
+              </div>
+              <div class="form-group">
+                  <label for="memberAge" class="control-label">Age:</label>
+                  <input type="text" class="form-control" id="memberAge" name="memberAge" placeholder="Age" />
+              </div>
+              <div class="form-group">
+                  <label for="memberGender" class="control-label">Gender:</label>
+                  <input type="text" class="form-control" id="memberGender" name="memberGender" placeholder="Gender" />
+              </div>
+              <div class="form-group">
+                  <label for="memberAddress" class="control-label">Address:</label>
+                  <input type="text" class="form-control" id="memberAddress" name="memberAddress" placeholder="Address" />
+              </div>
+              <div class="form-group">
+                  <label for="memberTel" class="control-label">Tel:</label>
+                  <input type="text" class="form-control" id="memberTel" name="memberTel" placeholder="Tel" />
+              </div>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Sign Up</button>
+          </div>
+      </form>
+    </div>
+  </div>
+</div>
