@@ -8,6 +8,7 @@
   "dependencies": {
     "ejs": "^2.3.3",
     "express": "^3.21.2",
-    "mysql":"*"
+    "mysql":"*",
+    "date-utils":"*"
   }
 }

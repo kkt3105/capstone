@@ -108,7 +108,7 @@ exports.signUp = function(req, res){
           user_age:req.body.memberAge,
           user_gender:req.body.memberGender,
           user_address:req.body.memberAddress,
-          user_tel:req.body.memberTel,
+          user_tel:req.body.memberTel
       };
 
       connection.query('INSERT INTO user SET ?', post, function(err, db2){
