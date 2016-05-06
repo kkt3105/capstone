@@ -54,7 +54,7 @@ exports.signUp = function(req, res){
       console.log('ERROR! : '+ err);
       throw err;
     }
-
+    var signUp=false;
     if(db.length != 0){
       console.log('ID:'+ req.body.memberID +' does already exist!');
     }else{
@@ -72,12 +72,19 @@ exports.signUp = function(req, res){
         if(err){
           console.log('ERROR! : '+ err);
           throw err;
-        }
+        }else{
+        signUp=true;
         console.log('Successfully signed up!');
+        }
       });
     }
     var jsonData={};
-    jsonData.ok=true;
+    if(signUp){
+        jsonData.signup_status=true;
+    }
+    else{
+        jsonData.signup_status=false;
+    }
     //res.redirect('/');
     res.writeHead(200, {
         "Content-Type":"application/json"
