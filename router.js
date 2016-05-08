@@ -9,11 +9,15 @@ exports.route = function(app) {
 
     res.render(string);
   });
+  app.post('/test', member.test);
 
   app.post('/Sign_Out', member.signOut);
   app.post('/Sign_In', member.signIn);
   app.post('/Sign_Up', member.signUp);
-  app.post('/test', member.test);
-  app.post('/Send_Heartrate_Log', data.heartrateLog);
-  app.post('/Send_Activity_Log', data.activityLog);
+
+  app.post('/Send_Heartrate_Log', data.sendHeartrateLog);
+  app.post('/Send_Activity_Log', data.sendActivityLog);
+
+  app.post('/Receive_Heartrate_Log', data.receiveHeartrateLog);
+  app.post('/Receive_Activity_Log', data.receiveActivityLog);
 };

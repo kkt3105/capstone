@@ -5,7 +5,7 @@ require('date-utils');
 var HeartRateTABLE = 'heartrate_log';
 var SensorDataTABLE = 'activity_log';
 
-exports.heartrateLog = function (req, res){
+exports.sendHeartrateLog = function (req, res){
     var flag = false;
     var condition = false;
     connection.query('SELECT * FROM user WHERE login_id='+"'"+req.body.login_id+"'", function(err, db, fields){
@@ -61,7 +61,7 @@ exports.heartrateLog = function (req, res){
     });
 };
 
-exports.activityLog = function (req, res){
+exports.sendActivityLog = function (req, res){
 
         var flag = false;
         var condition = false;
@@ -121,4 +121,24 @@ exports.activityLog = function (req, res){
             res.end(JSON.stringify(jsonData));
 
         });
+};
+exports.receiveHeartrateLog = function (req, res){
+    // type 0 all
+    // type 1 date
+    // type 2 period
+
+    if(req.body.type == 0){
+        connection.query('SELECT * FROM '+ HeartRateTABLE +' WHERE login_id='+"'"+req.body.login_id+"'", function(err, db, fields){
+            var jsonData = {};
+            jsonData.data = db;
+            res.writeHead(200, {"Content-Type":"application/json"});
+            res.end(JSON.stringify(jsonData));
+        });
+    }
+};
+exports.receiveActivityLog = function (req, res){
+    // type 0x all
+    // type 1x date
+    // type 2x period
+    // type xY Sensor type is 'Y'
 };

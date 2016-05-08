@@ -4,10 +4,7 @@ var TABLE = 'user';
 
 
 exports.test = function (req, res){
-        console.log(req.body.memberID);
-        console.log(req.body.memberPassword);
-
-        if(req.body.memberPassword==0){
+        if(req.body.type == 0){
             console.log("sucess");
         }
         res.end();
