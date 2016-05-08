@@ -1,7 +1,8 @@
 var mysql = require('mysql');
+var crypto = require('crypto');
 var connection = require('../db.js').getConnection();
 var TABLE = 'user';
-
+var authTABLE = 'authentication';
 
 exports.test = function (req, res){
         if(req.body.type == 0){
@@ -9,6 +10,14 @@ exports.test = function (req, res){
         }
         res.end();
 
+}
+
+function randomValueBase64 (len) {
+    return crypto.randomBytes(Math.ceil(len * 3 / 4))
+        .toString('base64')   // convert to base64 format
+        .slice(0, len)        // return required number of characters
+        .replace(/\+/g, '0')  // replace '+' with '0'
+        .replace(/\//g, '0'); // replace '/' with '0'
 }
 
 exports.signOut = function(req, res){
@@ -42,7 +51,37 @@ exports.signIn = function(req, res){
     }
     var jsonData={};
     if(login){
+        var login_token = randomValueBase64(13).toString();
         jsonData.login_status=true;
+        jsonData.token=login_token;
+        jsonData.user_type=db[0].user_type;
+
+        var post = {
+            login_id:req.body.login_id,
+            token:login_token
+        };
+
+        connection.query('SELECT * FROM '+ authTABLE + ' WHERE login_id='+"'"+req.body.login_id+"'", function(err, db2, fields){
+            if(db2.length == 0){
+                connection.query('INSERT INTO '+ authTABLE + ' SET ?', post, function(err, db3){
+                  if(err){
+                      console.log('ERROR! : '+ err);
+                      throw err;
+                  }
+                  console.log('token inserted!');
+                });
+            }else {
+                connection.query('UPDATE '+ authTABLE + ' SET token='+"'"+login_token+"'"+ ' WHERE login_id='+"'"+req.body.login_id+"'", function(err, db3){
+                  if(err){
+                      console.log('ERROR! : '+ err);
+                      throw err;
+                  }
+                  console.log('token updated!');
+                });
+            }
+        });
+
+
     }else{
         jsonData.login_status=false;
     }

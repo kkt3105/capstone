@@ -33,6 +33,11 @@ exports.connect = function(){
           throw err
       }else {console.log(res)};
   });
+  connection.query('SELECT * FROM authentication', function(err, res, fields){
+      if(err) {
+          throw err
+      }else {console.log(res)};
+  });
 };
 
 exports.getConnection = function(){
