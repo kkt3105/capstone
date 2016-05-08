@@ -6,10 +6,13 @@ var authTABLE = 'authentication';
 
 exports.test = function (req, res){
 
-        console.log(req.body.id);
+    connection.query('INSERT INTO hanguel values ( '+"'"+req.body.name+"'"+')', function(err, db){
+          console.log('Successfully inserted!');
+      });
 
+      console.log(req.body.name);
         var jsonData = {};
-        jsonData.data = req.body.id;
+        jsonData.data = req.body.name;
         res.writeHead(200, {"Content-Type":"application/json"});
         res.end(JSON.stringify(jsonData));
 }
