@@ -6,25 +6,10 @@ var authTABLE = 'authentication';
 
 exports.test = function (req, res){
 
-    connection.query('SELECT * FROM heartrate_log WHERE date > '+"'"+2016+"' and date < "+"'"+20160509+"'", function(err, db, fields){
-        console.log(req.body.start);
-        if(req.body.start != null){
-            console.log(123213123213123);
-        }
         var jsonData = {};
-        jsonData.data = db;
+        jsonData.data = req.headers.token;
         res.writeHead(200, {"Content-Type":"application/json"});
         res.end(JSON.stringify(jsonData));
-    });
-
-    // connection.query('SELECT * FROM heartrate_log WHERE date BETWEEN '+" '"+20160508000000+"' "+' and '+20160509000000+"'", function(err, db, fields){
-    //
-    //     var jsonData = {};
-    //     jsonData.data = db;
-    //     res.writeHead(200, {"Content-Type":"application/json"});
-    //     res.end(JSON.stringify(jsonData));
-    // });
-
 }
 
 function randomValueBase64 (len) {
@@ -61,7 +46,6 @@ exports.signIn = function(req, res){
       console.log('Password is not correct!');
     }else{  // Login success
       login=true;
-      //req.session.memberID = req.body.memberID;//
       console.log('Login Success!');
     }
     var jsonData={};
@@ -100,7 +84,6 @@ exports.signIn = function(req, res){
     }else{
         jsonData.login_status=false;
     }
-    //res.redirect('/');
     res.writeHead(200, {
         "Content-Type":"application/json"
     });
@@ -181,7 +164,6 @@ exports.signUp = function(req, res){
     else{
         jsonData.signup_status=false;
     }
-    //res.redirect('/');
     res.writeHead(200, {
         "Content-Type":"application/json"
     });

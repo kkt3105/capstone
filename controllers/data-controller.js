@@ -6,7 +6,7 @@ var HeartRateTABLE = 'heartrate_log';
 var SensorDataTABLE = 'activity_log';
 
 function isAuthenticated(req, res, callback){
-    connection.query('SELECT login_id FROM authentication WHERE token='+"'"+req.body.token+"'", function(err, db, fields){
+    connection.query('SELECT login_id FROM authentication WHERE token='+"'"+req.headers.token+"'", function(err, db, fields){
         var flag;
         if(err){
             console.log('error: '+err);

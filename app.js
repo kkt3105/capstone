@@ -15,17 +15,9 @@ app.set('port', process.env.PORT || 80);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-
 app.use(express.json());
 app.use(express.bodyParser());
 app.use(express.cookieParser());
-// use session
-/**
-app.use(express.session({
-  secret: 'kkt',
-  cookie: {maxAge : new Date(Date.now() + (60 * 60 * 1000))} // 1hour
-}));
-*/
 
 app.use(express.favicon());
 app.use(express.logger('dev'));
