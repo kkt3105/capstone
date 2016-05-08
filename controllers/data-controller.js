@@ -23,9 +23,12 @@ function isAuthenticated(req, res, callback){
 }
 
 exports.sendHeartrateLog = function (req, res){
-    var flag = false;
+    var db_flag = false;
     var condition = false;
-    isAuthenticated(req, res, function(flag){
+    var jsonData={};
+
+    isAuthenticated(req, res, function(flag, login_id){
+        jsonData.auth_status=flag;
         if(flag){
             if( req.body.heartrate <=0 || req.body.heartrate > 999 ){
                     condition = false;
@@ -46,11 +49,11 @@ exports.sendHeartrateLog = function (req, res){
 
                 connection.query('INSERT INTO ' + HeartRateTABLE + ' SET ?', post, function(err, db2){
                   if(err){
-                      flag = false;
+                      db_flag = false;
                       console.log('ERROR! : '+ err);
                       throw err;
                   }else{
-                      flag = true;
+                      db_flag = true;
                       console.log('Successfully inserted!');
                   }
                 });
@@ -59,8 +62,7 @@ exports.sendHeartrateLog = function (req, res){
     }});
 
 
-        var jsonData={};
-        if(flag){
+        if(db_flag){
             jsonData.status=true;
         }
         else{
@@ -75,11 +77,11 @@ exports.sendHeartrateLog = function (req, res){
 };
 
 exports.sendActivityLog = function (req, res){
-
-
-    var flag = false;
+    var db_flag = false;
     var condition = false;
+    var jsonData={};
     isAuthenticated(req, res, function(flag, login_id){
+        jsonData.auth_status=flag;
         if(flag){
                 if( req.body.modified_data.length == 0 || req.body.modified_data.length > 10 ){
                         condition = false;
@@ -105,11 +107,11 @@ exports.sendActivityLog = function (req, res){
 
                     connection.query('INSERT INTO ' + SensorDataTABLE + ' SET ?', post, function(err, db2){
                       if(err){
-                          flag = false;
+                          db_flag = false;
                           console.log('ERROR! : '+ err);
                           throw err;
                       }else{
-                          flag = true;
+                          db_flag = true;
                           console.log('Successfully inserted!');
                       }
                     });
@@ -117,8 +119,7 @@ exports.sendActivityLog = function (req, res){
 
         }});
 
-            var jsonData={};
-            if(flag){
+            if(db_flag){
                 jsonData.status=true;
             }
             else{
@@ -132,53 +133,76 @@ exports.sendActivityLog = function (req, res){
 
 };
 exports.receiveHeartrateLog = function (req, res){
-    /* login_id, type, period*/
-    // type 0 all
-    // type 1 date
-    // type 2 period\
+    var db_flag = false;
+    var start = 2000;
+    var end = 2999;
+    var jsonData = {};
 
     isAuthenticated(req, res, function(flag, login_id){
+        jsonData.auth_status=flag;
         if(flag){
-                    if(req.body.type == 0){
-                        connection.query('SELECT * FROM '+ HeartRateTABLE +' WHERE login_id='+"'"+login_id+"'", function(err, db, fields){
-                            var jsonData = {};
-                            jsonData.status = flag;
-                            jsonData.data = db;
-                            res.writeHead(200, {"Content-Type":"application/json"});
-                            res.end(JSON.stringify(jsonData));
-                        });
-                    }else if(req.body.type == 1){
-
-                    }else if(req.body.type == 2){
-
+            if(req.body.start_of_period != null){
+                start = req.body.start_of_period;
+            }
+            if(req.body.end_of_period != null){
+                end = req.body.end_of_period;
+            }
+                connection.query('SELECT * FROM '+ HeartRateTABLE +' WHERE login_id='+"'"+login_id+"' and date > '"+start+"' and date < "+"'"+end+"'", function(err, db, fields){
+                    if(err){
+                        db_flag = false;
+                        console.log('ERROR! : '+ err);
+                        throw err;
+                    }else{
+                        db_flag = true;
+                        console.log('Successfully inserted!');
                     }
+
+                    jsonData.status = db_flag;
+                    jsonData.data = db;
+                    res.writeHead(200, {"Content-Type":"application/json"});
+                    res.end(JSON.stringify(jsonData));
+                });
+
         }else {
-            var jsonData = {};
-            jsonData.status = flag;
             res.writeHead(200, {"Content-Type":"application/json"});
             res.end(JSON.stringify(jsonData));
         }
     });
-
-
-
-
-    // else {
-    //     console.log(456456);
-    //
-    //     var jsonData={};
-    //     jsonData.status=false;
-    //     res.writeHead(200, {
-    //         "Content-Type":"application/json"
-    //     });
-    //     res.end(JSON.stringify(jsonData));
-    // }
 };
 exports.receiveActivityLog = function (req, res){
-    isAuthenticated(req,res);
+    var db_flag = false;
+    var start = 2000;
+    var end = 2999;
+    var jsonData = {};
 
-    // type 0x all
-    // type 1x date
-    // type 2x period
-    // type xY Sensor type is 'Y'
+    isAuthenticated(req, res, function(flag, login_id){
+        jsonData.auth_status=flag;
+        if(flag){
+            if(req.body.start_of_period != null){
+                start = req.body.start_of_period;
+            }
+            if(req.body.end_of_period != null){
+                end = req.body.end_of_period;
+            }
+                connection.query('SELECT * FROM '+ SensorDataTABLE +' WHERE login_id='+"'"+login_id+"' and date > '"+start+"' and date < "+"'"+end+"'", function(err, db, fields){
+                    if(err){
+                        db_flag = false;
+                        console.log('ERROR! : '+ err);
+                        throw err;
+                    }else{
+                        db_flag = true;
+                        console.log('Successfully inserted!');
+                    }
+
+                    jsonData.status = db_flag;
+                    jsonData.data = db;
+                    res.writeHead(200, {"Content-Type":"application/json"});
+                    res.end(JSON.stringify(jsonData));
+                });
+
+        }else {
+            res.writeHead(200, {"Content-Type":"application/json"});
+            res.end(JSON.stringify(jsonData));
+        }
+    });
 };

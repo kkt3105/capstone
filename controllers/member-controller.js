@@ -5,10 +5,25 @@ var TABLE = 'user';
 var authTABLE = 'authentication';
 
 exports.test = function (req, res){
-        if(req.body.type == 0){
-            console.log("sucess");
+
+    connection.query('SELECT * FROM heartrate_log WHERE date > '+"'"+2016+"' and date < "+"'"+20160509+"'", function(err, db, fields){
+        console.log(req.body.start);
+        if(req.body.start != null){
+            console.log(123213123213123);
         }
-        res.end();
+        var jsonData = {};
+        jsonData.data = db;
+        res.writeHead(200, {"Content-Type":"application/json"});
+        res.end(JSON.stringify(jsonData));
+    });
+
+    // connection.query('SELECT * FROM heartrate_log WHERE date BETWEEN '+" '"+20160508000000+"' "+' and '+20160509000000+"'", function(err, db, fields){
+    //
+    //     var jsonData = {};
+    //     jsonData.data = db;
+    //     res.writeHead(200, {"Content-Type":"application/json"});
+    //     res.end(JSON.stringify(jsonData));
+    // });
 
 }
 
