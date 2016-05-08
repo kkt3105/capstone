@@ -154,7 +154,7 @@ exports.receiveHeartrateLog = function (req, res){
                         throw err;
                     }else{
                         db_flag = true;
-                        console.log('Successfully inserted!');
+                        console.log('Success!');
                     }
 
                     jsonData.status = db_flag;
@@ -191,7 +191,7 @@ exports.receiveActivityLog = function (req, res){
                         throw err;
                     }else{
                         db_flag = true;
-                        console.log('Successfully inserted!');
+                        console.log('Success!');
                     }
 
                     jsonData.status = db_flag;

@@ -6,8 +6,10 @@ var authTABLE = 'authentication';
 
 exports.test = function (req, res){
 
+        console.log(req.body.id);
+
         var jsonData = {};
-        jsonData.data = req.headers.token;
+        jsonData.data = req.body.id;
         res.writeHead(200, {"Content-Type":"application/json"});
         res.end(JSON.stringify(jsonData));
 }
@@ -112,7 +114,7 @@ exports.signUp = function(req, res){
         req.body.user_age > 999 ||
         req.body.user_gender.length > 4 ||
         req.body.user_address.length > 100 ||
-        req.body.user_tel.length > 13
+        req.body.user_tel.length > 11
     ){
       signUp=false;
       console.log('Input is too long!');
@@ -142,7 +144,9 @@ exports.signUp = function(req, res){
           user_age:req.body.user_age,
           user_gender:req.body.user_gender,
           user_address:req.body.user_address,
-          user_tel:req.body.user_tel
+          user_tel:req.body.user_tel,
+          latitude:req.body.latitude,
+          longitude:req.body.longitude
       };
 
       connection.query('INSERT INTO user SET ?', post, function(err, db2){
