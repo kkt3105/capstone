@@ -5,7 +5,7 @@ require('date-utils');
 var TABLE = 'heartrate_log';
 
 
-exports.test = function (req, res){
+exports.heartrateLog = function (req, res){
     var dt = new Date();
     var d = dt.toFormat('YYYYMMDDHH24MISS');
 

@@ -9,10 +9,10 @@ exports.route = function(app) {
 
     res.render(string);
   });
-  
+
   app.post('/Sign_Out', member.signOut);
   app.post('/Sign_In', member.signIn);
   app.post('/Sign_Up', member.signUp);
   app.post('/test', member.test);
-  app.post('/test2', data.test);
+  app.post('/Heartrate_Log', data.heartrateLog);
 };
