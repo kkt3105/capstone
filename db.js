@@ -18,6 +18,21 @@ exports.connect = function(){
       console.log("DB connection success!!");
     }
   });
+  connection.query('SELECT * FROM user', function(err, res, fields){
+      if(err) {
+          throw err
+      }else {console.log(res)};
+  });
+  connection.query('SELECT * FROM heartrate_log', function(err, res, fields){
+      if(err) {
+          throw err
+      }else {console.log(res)};
+  });
+  connection.query('SELECT * FROM activity_log', function(err, res, fields){
+      if(err) {
+          throw err
+      }else {console.log(res)};
+  });
 };
 
 exports.getConnection = function(){

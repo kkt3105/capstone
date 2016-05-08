@@ -14,5 +14,6 @@ exports.route = function(app) {
   app.post('/Sign_In', member.signIn);
   app.post('/Sign_Up', member.signUp);
   app.post('/test', member.test);
-  app.post('/Heartrate_Log', data.heartrateLog);
+  app.post('/Send_Heartrate_Log', data.heartrateLog);
+  app.post('/Send_Activity_Log', data.activityLog);
 };

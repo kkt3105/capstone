@@ -26,7 +26,7 @@ exports.signOut = function(req, res){
 };
 
 exports.signIn = function(req, res){
-  connection.query('SELECT * FROM '+ TABLE + ' WHERE login_id='+"'"+req.body.memberID+"'", function(err, db, fields){
+  connection.query('SELECT * FROM '+ TABLE + ' WHERE login_id='+"'"+req.body.login_id+"'", function(err, db, fields){
     var login;
     if(err) { // Error
       console.log('ERROR! : '+ err);
@@ -34,8 +34,8 @@ exports.signIn = function(req, res){
     }
     if(db.length == 0){    // User ID is not exist;
       login=false;
-      console.log('ID:'+ req.body.memberID +' does not exist!');
-    }else if(db[0].login_pw != req.body.memberPassword){ // Password is not correct
+      console.log('ID:'+ req.body.login_id +' does not exist!');
+    }else if(db[0].login_pw != req.body.login_pw){ // Password is not correct
       login=false;
       console.log('Password is not correct!');
     }else{  // Login success
@@ -60,7 +60,7 @@ exports.signIn = function(req, res){
 
 
 exports.signUp = function(req, res){
-  connection.query('SELECT * FROM '+ TABLE + ' WHERE login_id='+"'"+req.body.memberID+"'", function(err, db, fields){
+  connection.query('SELECT * FROM '+ TABLE + ' WHERE login_id='+"'"+req.body.login_id+"'", function(err, db, fields){
     if(err){
       console.log('ERROR! : '+ err);
       throw err;
@@ -69,28 +69,28 @@ exports.signUp = function(req, res){
 
     if(db.length != 0){
         signUp=false;
-      console.log('ID:'+ req.body.memberID +' does already exist!');
+      console.log('ID:'+ req.body.login_id +' does already exist!');
     }
-    else if(req.body.memberID.length > 15 ||
-        req.body.memberPassword.length > 15 ||
-        req.body.memberType.length > 15 ||
-        req.body.memberName.length > 20 ||
-        req.body.meberAge > 999 ||
-        req.body.memberGender.length > 4 ||
-        req.body.memberAddress.length > 100 ||
-        req.body.memberTel.length > 13
+    else if(req.body.login_id.length > 15 ||
+        req.body.login_pw.length > 15 ||
+        req.body.user_type.length > 15 ||
+        req.body.user_name.length > 20 ||
+        req.body.user_age > 999 ||
+        req.body.user_gender.length > 4 ||
+        req.body.user_address.length > 100 ||
+        req.body.user_tel.length > 13
     ){
       signUp=false;
       console.log('Input is too long!');
     }
-    else if(req.body.memberID.length == 0 ||
-        req.body.memberPassword.length == 0 ||
-        req.body.memberType.length == 0 ||
-        req.body.memberName.length == 0 ||
-        req.body.meberAge <= 0 ||
-        req.body.memberGender.length == 0 ||
-        req.body.memberAddress.length == 0 ||
-        req.body.memberTel.length == 0
+    else if(req.body.login_id.length == 0 ||
+        req.body.login_pw.length == 0 ||
+        req.body.user_type.length == 0 ||
+        req.body.user_name.length == 0 ||
+        req.body.user_age <= 0 ||
+        req.body.user_gender.length == 0 ||
+        req.body.user_address.length == 0 ||
+        req.body.user_tel.length == 0
     ){
       signUp=false;
       console.log('Input should not be empty!');
@@ -101,14 +101,14 @@ exports.signUp = function(req, res){
 
     if(signUp){
       var post = {
-          login_id:req.body.memberID,
-          login_pw:req.body.memberPassword,
-          user_type:req.body.memberType,
-          user_name:req.body.memberName,
-          user_age:req.body.memberAge,
-          user_gender:req.body.memberGender,
-          user_address:req.body.memberAddress,
-          user_tel:req.body.memberTel
+          login_id:req.body.login_id,
+          login_pw:req.body.login_pw,
+          user_type:req.body.user_type,
+          user_name:req.body.user_name,
+          user_age:req.body.user_age,
+          user_gender:req.body.user_gender,
+          user_address:req.body.user_address,
+          user_tel:req.body.user_tel
       };
 
       connection.query('INSERT INTO user SET ?', post, function(err, db2){
