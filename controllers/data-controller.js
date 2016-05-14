@@ -1,33 +1,20 @@
 var mysql = require('mysql');
-var connection = require('../db.js').getConnection();
+var db=require('../db.js');
+var connection = db.getConnection();
+
 require('date-utils');
 
 var HeartRateTABLE = 'heartrate_log';
 var SensorDataTABLE = 'activity_log';
 
-function isAuthenticated(req, res, callback){
-    connection.query('SELECT login_id FROM authentication WHERE token='+"'"+req.headers.token+"'", function(err, db, fields){
-        var flag;
-        if(err){
-            console.log('error: '+err);
-            throw err;
-        }
 
-        if(db.length != 0){
-            flag= true;
-        }else {
-            flag= false;
-        }
-        callback (flag, db[0].login_id);
-    });
-}
 
 exports.sendHeartrateLog = function (req, res){
     var db_flag = false;
     var condition = false;
     var jsonData={};
 
-    isAuthenticated(req, res, function(flag, login_id){
+    db.isAuthenticated(req, res, function(flag, login_id){
         jsonData.auth_status=flag;
         if(flag){
             if( req.body.heartrate <=0 || req.body.heartrate > 999 ){
@@ -80,7 +67,7 @@ exports.sendActivityLog = function (req, res){
     var db_flag = false;
     var condition = false;
     var jsonData={};
-    isAuthenticated(req, res, function(flag, login_id){
+    db.isAuthenticated(req, res, function(flag, login_id){
         jsonData.auth_status=flag;
         if(flag){
                 if( req.body.modified_data.length == 0 || req.body.modified_data.length > 10 ){
@@ -138,7 +125,7 @@ exports.receiveHeartrateLog = function (req, res){
     var end = 2999;
     var jsonData = {};
 
-    isAuthenticated(req, res, function(flag, login_id){
+    db.isAuthenticated(req, res, function(flag, login_id){
         jsonData.auth_status=flag;
         if(flag){
             if(req.body.start_of_period != null){
@@ -175,7 +162,7 @@ exports.receiveActivityLog = function (req, res){
     var end = 2999;
     var jsonData = {};
 
-    isAuthenticated(req, res, function(flag, login_id){
+    db.isAuthenticated(req, res, function(flag, login_id){
         jsonData.auth_status=flag;
         if(flag){
             if(req.body.start_of_period != null){
