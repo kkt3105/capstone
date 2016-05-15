@@ -46,8 +46,8 @@ manager_id varchar(15),
 senior_id varchar(15),
 date varchar(14) not null,
 primary key (manager_id, senior_id),
-foreign key (manager_id) references manager_list (login_id),
-foreign key (senior_id) references senior_list (login_id)
+foreign key (manager_id) references user (login_id),
+foreign key (senior_id) references user (login_id)
 );
 
 create table volunteer_info (
@@ -56,8 +56,8 @@ senior_id varchar(15),
 start_time varchar(14) not null,
 end_time varchar(14) not null,
 primary key (volunteer_id, senior_id, start_time, end_time),
-foreign key (volunteer_id) references volunteer_list (login_id),
-foreign key (senior_id) references senior_list (login_id)
+foreign key (volunteer_id) references user (login_id),
+foreign key (senior_id) references user (login_id)
 );
 
 create table heartrate_log(

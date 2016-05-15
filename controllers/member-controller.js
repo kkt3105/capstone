@@ -1,20 +1,25 @@
 var mysql = require('mysql');
 var crypto = require('crypto');
-var connection = require('../db.js').getConnection();
+var db=require('../db.js');
+var connection = db.getConnection();
+
 var TABLE = 'user';
 var authTABLE = 'authentication';
 
 exports.test = function (req, res){
 
-    connection.query('INSERT INTO hanguel values ( '+"'"+req.body.name+"'"+')', function(err, db){
-          console.log('Successfully inserted!');
-      });
+        db.whatType(req.body.id, function(user_type){
+            console.log(req.body.id);
+            var jsonData = {};
+            jsonData.data = user_type;
+            if(user_type == "senior"){
+                console.log("senior");
+            }
+            res.writeHead(200, {"Content-Type":"application/json"});
+            res.end(JSON.stringify(jsonData));
+        });
 
-      console.log(req.body.name);
-        var jsonData = {};
-        jsonData.data = req.body.name;
-        res.writeHead(200, {"Content-Type":"application/json"});
-        res.end(JSON.stringify(jsonData));
+
 }
 
 function randomValueBase64 (len) {

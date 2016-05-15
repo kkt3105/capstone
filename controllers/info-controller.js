@@ -1,24 +1,116 @@
 var mysql = require('mysql');
-var connection = require('../db.js').getConnection();
+var db=require('../db.js');
+var connection = db.getConnection();
 require('date-utils');
 
 var VolunteerInfoTABLE = 'volunteer_info';
 var ManagementInfoTABLE = 'management_info';
 
-function isAuthenticated(req, res, callback){
-    connection.query('SELECT login_id FROM authentication WHERE token='+"'"+req.headers.token+"'", function(err, db, fields){
-        var flag;
-        if(err){
-            console.log('error: '+err);
-            throw err;
-        }
 
-        if(db.length != 0){
-            flag= true;
+
+exports.seniorList = function(req, res){
+    var db_flag=false;
+    var jsonData={};
+    jsonData.data = [];
+
+    db.isAuthenticated(req, res, function(flag, login_id){
+        jsonData.auth_status=flag;
+        if(flag){
+            db.whatType(login_id, function(user_type){
+                if(user_type == "manager"){
+                    connection.query('SELECT senior_id FROM '+ ManagementInfoTABLE +' WHERE manager_id = '+"'"+login_id+"'", function(err, db, fields){
+                        if(err){
+                            db_flag = false;
+                            console.log('ERROR! : '+ err);
+                            throw err;
+                        }else{
+                            for(i=0; i<db.length; i++){
+                                connection.query("SELECT * FROM user WHERE login_id = "+ "'" + db[i].senior_id+ "'", function(err, db2, fields){
+                                    db_flag = true;
+
+                                    jsonData.data.push(db2[0]);
+                                });
+                            }
+                            console.log("1");
+                            console.log(jsonData);
+                            jsonData.status = db_flag;
+                            res.writeHead(200, {"Content-Type":"application/json"});
+                            res.end(JSON.stringify(jsonData));
+                        }
+                    });
+                }else{
+                    connection.query("SELECT * FROM user WHERE user_type = 'senior'", function(err, db, fields){
+                        if(err){
+                            db_flag = false;
+                            console.log('ERROR! : '+ err);
+                            throw err;
+                        }else{
+                            db_flag = true;
+                            jsonData.data = db;
+
+                            console.log(jsonData);
+                            jsonData.status = db_flag;
+                            res.writeHead(200, {"Content-Type":"application/json"});
+                            res.end(JSON.stringify(jsonData));
+                        }
+                    });
+                }
+            });
         }else {
-            flag= false;
+            res.writeHead(200, {"Content-Type":"application/json"});
+            res.end(JSON.stringify(jsonData));
         }
-        callback (flag, db[0].login_id);
+    });
+}
+exports.sendManagementInfo = function(req, res){
+    // req.body.senior_id
+    var db_flag=false;
+    var jsonData={};
+    var dt = new Date();
+    var d = dt.toFormat('YYYYMMDDHH24MISS');
+
+    db.isAuthenticated(req, res ,function(flag, login_id){
+        jsonData.auth_status = flag;
+        if(flag){
+            console.log('Authenticated User');
+            db.whatType(login_id, function(user_type){
+                if(user_type == 'manager'){
+                    connection.query('SELECT * FROM user WHERE login_id= '+"'"+req.body.senior_id+"'", function(err, db, fields){
+                        if(err){
+                            throw err;
+                        }
+                        if(db.length != 0){
+                            db_flag = true;
+                            var post = {
+                                manager_id:login_id,
+                                senior_id:req.body.senior_id,
+                                date:d
+                            };
+                            connection.query('INSERT INTO management_info SET ?', post, function(err, db2){
+                                if(err){
+                                    db_flag=false;
+                                    throw err;
+                                }else {
+                                    db_flag=true;
+                                    console.log('Successfully inserted!');
+                                }
+                            });
+                        }
+                        if(db_flag){
+                            jsonData.status = true;
+                        }else {
+                            jsonData.status = false;
+                        }
+                        res.writeHead(200, {"Content-Type":"application/json"});
+                        res.end(JSON.stringify(jsonData));
+                    });
+                }
+            });
+
+        }else {
+            res.writeHead(200, {"Content-Type":"application/json"});
+            res.end(JSON.stringify(jsonData));
+        }
     });
 }
 
@@ -28,7 +120,7 @@ exports.receiveManagementInfo = function (req, res){
     var end = 2999;
     var jsonData = {};
 
-    isAuthenticated(req, res, function(flag, login_id){
+    db.isAuthenticated(req, res, function(flag, login_id){
         jsonData.auth_status=flag;
         if(flag){
             if(req.body.start_of_period != null){
@@ -66,7 +158,7 @@ exports.receiveVolunteerInfo = function (req, res){
     var end = 2999;
     var jsonData = {};
 
-    isAuthenticated(req, res, function(flag, login_id){
+    db.isAuthenticated(req, res, function(flag, login_id){
         jsonData.auth_status=flag;
         if(flag){
             if(req.body.start_of_period != null){
