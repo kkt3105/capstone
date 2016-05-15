@@ -5,7 +5,7 @@ var connection = mysql.createConnection({
   host : '59.187.203.140',
   user:'root',
   password:'kt20112094',
-  database:'cap2'
+  database:'capstone_project'
 });
 
 exports.connect = function(){
