@@ -134,19 +134,28 @@ exports.seniorList = function(req, res){
                         }
                     });
                 }else{
-                    connection.query("SELECT A.login_id, A.user_name FROM user A WHERE user_type = 'senior'", function(err, db, fields){
+                    connection.query("SELECT A.latitude, A.longitude FROM user A WHERE login_id = '"+login_id+"'", function(err, db, fields){
                         if(err){
                             db_flag = false;
                             console.log('ERROR! : '+ err);
                             throw err;
                         }else{
-                            db_flag = true;
-                            jsonData.data = db;
+                            var mylat=db[0].latitude;
+                            var mylgt=db[0].longitude;
 
-                            console.log(jsonData);
-                            jsonData.status = db_flag;
-                            res.writeHead(200, {"Content-Type":"application/json"});
-                            res.end(JSON.stringify(jsonData));
+                            connection.query("SELECT login_id, user_name, (6371 * acos(cos(radians('"+mylat+"')) * cos(radians(latitude)) * cos(radians(longitude) - radians('"+mylgt+"')) + sin(radians('"+mylat+"')) * sin(radians(latitude)))) AS distance FROM user WHERE user_type = 'senior' HAVING distance < 3 ORDER BY distance", function(err, db2, fields){
+                                if(err){
+                                    db_flag = false;
+                                    console.log('ERROR! : '+ err);
+                                    throw err;
+                                }else{
+                                    db_flag = true;
+                                    jsonData.data = db2;
+                                    jsonData.status = db_flag;
+                                    res.writeHead(200, {"Content-Type":"application/json"});
+                                    res.end(JSON.stringify(jsonData));
+                                }
+                            });
                         }
                     });
                 }

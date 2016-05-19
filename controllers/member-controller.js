@@ -7,19 +7,6 @@ var TABLE = 'user';
 var authTABLE = 'authentication';
 
 exports.test = function (req, res){
-
-        db.whatType(req.body.id, function(user_type){
-            console.log(req.body.id);
-            var jsonData = {};
-            jsonData.data = user_type;
-            if(user_type == "senior"){
-                console.log("senior");
-            }
-            res.writeHead(200, {"Content-Type":"application/json"});
-            res.end(JSON.stringify(jsonData));
-        });
-
-
 }
 
 function randomValueBase64 (len) {
