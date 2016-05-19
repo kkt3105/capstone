@@ -46,9 +46,9 @@ exports.route = function(app) {
   app.post('/Senior', info.senior);
 
   // 요청 기록 인출 - 봉사자, 노인
-
+  app.post('/Request_List', request.list);
   // 요청 승인 - 봉사자, 노인
-
+  app.post('/Accept_Request', request.accept);
   // 요청 - 봉사자(노인id, 언제, 얼마나), 노인(언제, 얼마나, 내용)
   app.post('/Request', request.request);
 
