@@ -33,11 +33,23 @@ function randomValueBase64 (len) {
 exports.signOut = function(req, res){
 
     var jsonData={};
-    jsonData.logout_status=true;
-    res.writeHead(200, {
-        "Content-Type":"application/json"
+    db.isAuthenticated(req, res, function(flag, login_id){
+        if(flag){
+            connection.query('DELETE FROM '+ authTABLE +' WHERE login_id = '+"'" + login_id + "'", function(err, db, fields){
+                if(err){
+                    throw err;
+                }else{
+                    jsonData.logout_status=true;
+                    res.writeHead(200, {"Content-Type":"application/json"});
+                    res.end(JSON.stringify(jsonData));
+                }
+            });
+        }else {
+            jsonData.logout_status=false;
+            res.writeHead(200, {"Content-Type":"application/json"});
+            res.end(JSON.stringify(jsonData));
+        }
     });
-    res.end(JSON.stringify(jsonData));
 
 };
 

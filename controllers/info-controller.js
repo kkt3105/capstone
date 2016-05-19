@@ -5,7 +5,68 @@ require('date-utils');
 
 var VolunteerInfoTABLE = 'volunteer_info';
 var ManagementInfoTABLE = 'management_info';
+var SeniorListTABLE = 'senior_list';
 
+exports.setHR = function(req, res){
+    var db_flag = false;
+    var jsonData = {};
+    db.isAuthenticated(req, res, function(flag, login_id){
+        jsonData.auth_status=flag;
+        if(flag){
+            db.whatType(login_id, function(user_type){
+                if(user_type == "manager"){
+                    connection.query('SELECT * FROM '+ SeniorListTABLE + ' WHERE login_id='+"'"+req.body.senior_id+"'", function(err, db, fields){
+                        if(err){
+                            db_flag = false;
+                            console.log('ERROR! : '+ err);
+                            throw err;
+                        }else{
+                            var post = {
+                                login_id:req.body.senior_id,
+                                target_zone_min: req.body.target_zone_min,
+                                target_zone_max: req.body.target_zone_max
+                            }
+
+                            if(db.length == 0){
+                                connection.query('INSERT INTO '+ SeniorListTABLE + ' SET ?', post, function(err, db3){
+                                  if(err){
+                                      db_flag = false;
+                                      console.log('ERROR! : '+ err);
+                                      throw err;
+                                  }else{
+                                      console.log("Successfully inserted HR");
+                                      db_flag = true;
+                                      jsonData.status = db_flag;
+                                      res.writeHead(200, {"Content-Type":"application/json"});
+                                      res.end(JSON.stringify(jsonData));
+                                  }
+                                });
+                            }else {
+                                connection.query('UPDATE '+ SeniorListTABLE + ' SET ? WHERE login_id='+"'"+req.body.senior_id+"'", post, function(err, db2){
+                                  if(err){
+                                      db_flag = false;
+                                      console.log('ERROR! : '+ err);
+                                      throw err;
+                                  }else{
+                                      console.log("Successfully updated HR");
+                                      db_flag = true;
+                                      jsonData.status = db_flag;
+                                      res.writeHead(200, {"Content-Type":"application/json"});
+                                      res.end(JSON.stringify(jsonData));
+                                  }
+                                });
+                            }
+                        }
+
+                    });
+                }
+            });
+        }else{
+            res.writeHead(200, {"Content-Type":"application/json"});
+            res.end(JSON.stringify(jsonData));
+        }
+    });
+}
 exports.senior = function(req, res){
         var db_flag = false;
         var jsonData = {};

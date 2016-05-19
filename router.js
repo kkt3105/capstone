@@ -12,7 +12,6 @@ exports.route = function(app) {
   });
   app.post('/test', member.test);
 
-  // Sign out 시에 authentication 테이블 delete 하게 수정할 것
   app.post('/Sign_Out', member.signOut);
   app.post('/Sign_In', member.signIn);
   app.post('/Sign_Up', member.signUp);
@@ -30,6 +29,9 @@ exports.route = function(app) {
 
   // 담당정보 등록 - 관리사
   app.post('/Send_Management_Info', info.sendManagementInfo);
+
+  // 담당노인 HR 설정
+  app.post('/Set_HR', info.setHR);
 
   // 담당정보 인출 - 관리사 // (Senior_List 에서 호출됨)
   // app.post('/Receive_Management_Info', info.receiveManagementInfo);
@@ -50,6 +52,5 @@ exports.route = function(app) {
   // 요청 - 봉사자(노인id, 언제, 얼마나), 노인(언제, 얼마나, 내용)
   app.post('/Request', request.request);
 
-  // 담당노인 HR 설정
 
 };
