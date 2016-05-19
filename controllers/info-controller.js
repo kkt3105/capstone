@@ -9,6 +9,45 @@ var ManagementInfoTABLE = 'management_info';
 exports.senior = function(req, res){
         var db_flag = false;
         var jsonData = {};
+        db.isAuthenticated(req, res, function(flag, login_id){
+            jsonData.auth_status=flag;
+            if(flag){
+                db.whatType(login_id, function(user_type){
+                    if(user_type == "manager"){
+                        connection.query('SELECT * FROM user A INNER JOIN senior_list B ON A.login_id = B.login_id WHERE A.login_id = '+ "'"+req.body.senior_id+"'" , function(err, db, fields){
+                            if(err){
+                                db_flag = false;
+                                console.log('ERROR! : '+ err);
+                                throw err;
+                            }else{
+                                db_flag = true;
+                                jsonData.data = db;
+                                jsonData.status = db_flag;
+                                res.writeHead(200, {"Content-Type":"application/json"});
+                                res.end(JSON.stringify(jsonData));
+                            }
+                        });
+                    }else{
+                        connection.query('SELECT A.user_name, A.user_tel, A.latitude, A.longitude  FROM user A WHERE A.login_id = '+ "'"+req.body.senior_id+"'" , function(err, db, fields){
+                            if(err){
+                                db_flag = false;
+                                console.log('ERROR! : '+ err);
+                                throw err;
+                            }else{
+                                db_flag = true;
+                                jsonData.data = db;
+                                jsonData.status = db_flag;
+                                res.writeHead(200, {"Content-Type":"application/json"});
+                                res.end(JSON.stringify(jsonData));
+                            }
+                        });
+                    }
+                });
+            }else {
+                res.writeHead(200, {"Content-Type":"application/json"});
+                res.end(JSON.stringify(jsonData));
+            }
+        });
 }
 
 exports.seniorList = function(req, res){
@@ -20,7 +59,7 @@ exports.seniorList = function(req, res){
         if(flag){
             db.whatType(login_id, function(user_type){
                 if(user_type == "manager"){
-                    connection.query('SELECT * FROM user WHERE user.login_id IN (SELECT senior_id FROM '+ ManagementInfoTABLE +' WHERE manager_id = '+"'"+login_id+"')", function(err, db, fields){
+                    connection.query('SELECT A.login_id, A.user_name FROM user A WHERE user.login_id IN (SELECT senior_id FROM '+ ManagementInfoTABLE +' WHERE manager_id = '+"'"+login_id+"')", function(err, db, fields){
                         if(err){
                             db_flag = false;
                             console.log('ERROR! : '+ err);
@@ -34,7 +73,7 @@ exports.seniorList = function(req, res){
                         }
                     });
                 }else{
-                    connection.query("SELECT * FROM user WHERE user_type = 'senior'", function(err, db, fields){
+                    connection.query("SELECT A.login_id, A.user_name FROM user A WHERE user_type = 'senior'", function(err, db, fields){
                         if(err){
                             db_flag = false;
                             console.log('ERROR! : '+ err);

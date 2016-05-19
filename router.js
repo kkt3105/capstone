@@ -34,11 +34,12 @@ exports.route = function(app) {
 
   // 봉사기록 인출 - 봉사자
   app.post('/Receive_Volunteer_Info', info.receiveVolunteerInfo);
-  // 노인 목록 인출 - 봉사자, 노인, 관리사
+
+  // 노인 목록 인출 - 봉사자(위치기반에 맞게 수정해야함), 노인(위치기반에 맞게 수정해야함), 관리사/id,이름(담당하고 있는)
   app.post('/Senior_List', info.seniorList);
 
   // 노인 정보 인출(id) - 관리사/모든정보, 봉사자/이름,위치,전화번호 , 노인/이름,위치,전화번호
-  // app.post('/Senior', info.senior);
+   app.post('/Senior', info.senior);
 
   // 요청 기록 인출 - 봉사자, 노인
 
