@@ -1,6 +1,7 @@
 var member = require('./controllers/member-controller.js');
 var data = require('./controllers/data-controller.js');
 var info = require('./controllers/info-controller.js');
+var request = require('./controllers/req-controller.js');
 
 exports.route = function(app) {
   app.get('/', function(req, res) {
@@ -11,6 +12,7 @@ exports.route = function(app) {
   });
   app.post('/test', member.test);
 
+  // Sign out 시에 authentication 테이블 delete 하게 수정할 것
   app.post('/Sign_Out', member.signOut);
   app.post('/Sign_In', member.signIn);
   app.post('/Sign_Up', member.signUp);
@@ -39,13 +41,14 @@ exports.route = function(app) {
   app.post('/Senior_List', info.seniorList);
 
   // 노인 정보 인출(id) - 관리사/모든정보, 봉사자/이름,위치,전화번호 , 노인/이름,위치,전화번호
-   app.post('/Senior', info.senior);
+  app.post('/Senior', info.senior);
 
   // 요청 기록 인출 - 봉사자, 노인
 
   // 요청 승인 - 봉사자, 노인
 
   // 요청 - 봉사자(노인id, 언제, 얼마나), 노인(언제, 얼마나, 내용)
+  app.post('/Request', request.request);
 
   // 담당노인 HR 설정
 

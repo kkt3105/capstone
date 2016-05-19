@@ -107,6 +107,16 @@ exports.connect = function(){
           console.log();
       };
   });
+  connection.query('SELECT * FROM request_list', function(err, res, fields){
+      if(err) {
+          throw err
+      }else {
+          console.log("------------------REQUEST List------------------")
+          console.log(res)
+          console.log();
+      };
+  });
+
   connection.query('SELECT * FROM authentication', function(err, res, fields){
       if(err) {
           throw err

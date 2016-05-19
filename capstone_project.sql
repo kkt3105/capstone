@@ -76,3 +76,18 @@ modified_data varchar(10) not null,
 primary key (login_id, type_of_sensor, date),
 foreign key (login_id) references user (login_id)
 );
+
+create table request_list(
+req_type int(1) not null,
+senior_id varchar(15) not null,
+volunteer_id varchar(15), 
+date_from varchar(12) not null,
+date_to varchar(12) not null,
+details varchar(50),
+current_status int(1) not null,
+signature int(1) not null, 
+foreign key (senior_id) references user (login_id),
+foreign key (volunteer_id) references user (login_id),
+primary key (senior_id, date_from)
+
+);
