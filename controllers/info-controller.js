@@ -6,33 +6,28 @@ require('date-utils');
 var VolunteerInfoTABLE = 'volunteer_info';
 var ManagementInfoTABLE = 'management_info';
 
-
+exports.senior = function(req, res){
+        var db_flag = false;
+        var jsonData = {};
+}
 
 exports.seniorList = function(req, res){
     var db_flag=false;
     var jsonData={};
-    jsonData.data = [];
 
     db.isAuthenticated(req, res, function(flag, login_id){
         jsonData.auth_status=flag;
         if(flag){
             db.whatType(login_id, function(user_type){
                 if(user_type == "manager"){
-                    connection.query('SELECT senior_id FROM '+ ManagementInfoTABLE +' WHERE manager_id = '+"'"+login_id+"'", function(err, db, fields){
+                    connection.query('SELECT * FROM user WHERE user.login_id IN (SELECT senior_id FROM '+ ManagementInfoTABLE +' WHERE manager_id = '+"'"+login_id+"')", function(err, db, fields){
                         if(err){
                             db_flag = false;
                             console.log('ERROR! : '+ err);
                             throw err;
                         }else{
-                            for(i=0; i<db.length; i++){
-                                connection.query("SELECT * FROM user WHERE login_id = "+ "'" + db[i].senior_id+ "'", function(err, db2, fields){
-                                    db_flag = true;
-
-                                    jsonData.data.push(db2[0]);
-                                });
-                            }
-                            console.log("1");
-                            console.log(jsonData);
+                            db_flag = true;
+                            jsonData.data = db;
                             jsonData.status = db_flag;
                             res.writeHead(200, {"Content-Type":"application/json"});
                             res.end(JSON.stringify(jsonData));

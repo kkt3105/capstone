@@ -26,15 +26,26 @@ exports.route = function(app) {
   // 활동량 정보 인출
   app.post('/Receive_Activity_Log', data.receiveActivityLog);
 
-  // 담당정보 등록
+  // 담당정보 등록 - 관리사
   app.post('/Send_Management_Info', info.sendManagementInfo);
 
-  // 담당정보 인출
-  app.post('/Receive_Management_Info', info.receiveManagementInfo);
-  // 봉사기록 인출
+  // 담당정보 인출 - 관리사 // (Senior_List 에서 호출됨)
+  // app.post('/Receive_Management_Info', info.receiveManagementInfo);
+
+  // 봉사기록 인출 - 봉사자
   app.post('/Receive_Volunteer_Info', info.receiveVolunteerInfo);
-  // 노인 목록 인출
+  // 노인 목록 인출 - 봉사자, 노인, 관리사
   app.post('/Senior_List', info.seniorList);
 
+  // 노인 정보 인출(id) - 관리사/모든정보, 봉사자/이름,위치,전화번호 , 노인/이름,위치,전화번호
+  // app.post('/Senior', info.senior);
+
+  // 요청 기록 인출 - 봉사자, 노인
+
+  // 요청 승인 - 봉사자, 노인
+
+  // 요청 - 봉사자(노인id, 언제, 얼마나), 노인(언제, 얼마나, 내용)
+
+  // 담당노인 HR 설정
 
 };
