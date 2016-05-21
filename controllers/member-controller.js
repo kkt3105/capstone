@@ -7,7 +7,47 @@ var TABLE = 'user';
 var authTABLE = 'authentication';
 
 exports.test = function (req, res){
-}
+    var db_flag = false;
+    var start = 2000;
+    var end = 2999;
+    var jsonData = {};
+    var qstring ="";
+    db.isAuthenticated(req, res, function(flag, login_id){
+        jsonData.auth_status=flag;
+        if(flag){
+            if(req.body.start_of_period != null){
+                start = req.body.start_of_period;
+            }
+            if(req.body.end_of_period != null){
+                end = req.body.end_of_period;
+            }
+            if(req.body.start_of_period == null & req.body.end_of_period == null){
+                qstring = 'SELECT * FROM heartrate_log WHERE login_id='+"'"+login_id+"' order by date desc limit 0,1";
+            }else {
+                qstring = 'SELECT * FROM heartrate_log WHERE login_id='+"'"+login_id+"' and date > '"+start+"' and date < "+"'"+end+"'";
+            }
+                connection.query(qstring+"", function(err, db, fields){
+                    if(err){
+                        db_flag = false;
+                        console.log('ERROR! : '+ err);
+                        throw err;
+                    }else{
+                        db_flag = true;
+                        console.log('Success!');
+                    }
+
+                    jsonData.status = db_flag;
+                    jsonData.data = db;
+                    res.writeHead(200, {"Content-Type":"application/json"});
+                    res.end(JSON.stringify(jsonData));
+                });
+
+        }else {
+            res.writeHead(200, {"Content-Type":"application/json"});
+            res.end(JSON.stringify(jsonData));
+        }
+    });
+};
 
 function randomValueBase64 (len) {
     return crypto.randomBytes(Math.ceil(len * 3 / 4))

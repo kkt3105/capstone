@@ -124,7 +124,7 @@ exports.receiveHeartrateLog = function (req, res){
     var start = 2000;
     var end = 2999;
     var jsonData = {};
-
+    var qstring ="";
     db.isAuthenticated(req, res, function(flag, login_id){
         jsonData.auth_status=flag;
         if(flag){
@@ -134,7 +134,12 @@ exports.receiveHeartrateLog = function (req, res){
             if(req.body.end_of_period != null){
                 end = req.body.end_of_period;
             }
-                connection.query('SELECT * FROM '+ HeartRateTABLE +' WHERE login_id='+"'"+login_id+"' and date > '"+start+"' and date < "+"'"+end+"'", function(err, db, fields){
+            if(req.body.start_of_period == null & req.body.end_of_period == null){
+                qstring = 'SELECT * FROM heartrate_log WHERE login_id='+"'"+login_id+"' order by date desc limit 0,1";
+            }else {
+                qstring = 'SELECT * FROM heartrate_log WHERE login_id='+"'"+login_id+"' and date > '"+start+"' and date < "+"'"+end+"'";
+            }
+                connection.query(qstring+"", function(err, db, fields){
                     if(err){
                         db_flag = false;
                         console.log('ERROR! : '+ err);
@@ -156,6 +161,7 @@ exports.receiveHeartrateLog = function (req, res){
         }
     });
 };
+
 exports.receiveActivityLog = function (req, res){
     var db_flag = false;
     var start = 2000;
