@@ -158,7 +158,6 @@ exports.signUp = function(req, res){
         req.body.login_pw.length > 15 ||
         req.body.user_type.length > 15 ||
         req.body.user_name.length > 20 ||
-        req.body.user_age > 999 ||
         req.body.user_gender.length > 4 ||
         req.body.user_address.length > 100 ||
         req.body.user_tel.length > 11
@@ -170,7 +169,6 @@ exports.signUp = function(req, res){
         req.body.login_pw.length == 0 ||
         req.body.user_type.length == 0 ||
         req.body.user_name.length == 0 ||
-        req.body.user_age <= 0 ||
         req.body.user_gender.length == 0 ||
         req.body.user_address.length == 0 ||
         req.body.user_tel.length == 0
@@ -188,12 +186,13 @@ exports.signUp = function(req, res){
           login_pw:req.body.login_pw,
           user_type:req.body.user_type,
           user_name:req.body.user_name,
-          user_age:req.body.user_age,
           user_gender:req.body.user_gender,
           user_address:req.body.user_address,
           user_tel:req.body.user_tel,
           latitude:req.body.latitude,
-          longitude:req.body.longitude
+          longitude:req.body.longitude,
+          birthdate:req.body.birthdate
+
       };
 
       connection.query('INSERT INTO user SET ?', post, function(err, db2){
