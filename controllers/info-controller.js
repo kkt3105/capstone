@@ -120,7 +120,7 @@ exports.seniorList = function(req, res){
         if(flag){
             db.whatType(login_id, function(user_type){
                 if(user_type == "manager"){
-                    connection.query('SELECT A.login_id, A.user_name FROM user A WHERE user.login_id IN (SELECT senior_id FROM '+ ManagementInfoTABLE +' WHERE manager_id = '+"'"+login_id+"')", function(err, db, fields){
+                    connection.query('SELECT A.login_id, A.user_name FROM user A WHERE A.login_id IN (SELECT senior_id FROM '+ ManagementInfoTABLE +' WHERE manager_id = '+"'"+login_id+"')", function(err, db, fields){
                         if(err){
                             db_flag = false;
                             console.log('ERROR! : '+ err);

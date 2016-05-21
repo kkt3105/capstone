@@ -142,10 +142,10 @@ exports.isAuthenticated = function(req, res, callback){
 
         if(db.length != 0){
             flag= true;
+            callback (flag, db[0].login_id);
         }else {
             flag= false;
         }
-        callback (flag, db[0].login_id);
     });
 }
 
