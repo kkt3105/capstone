@@ -191,7 +191,7 @@ exports.signUp = function(req, res){
           user_tel:req.body.user_tel,
           latitude:req.body.latitude,
           longitude:req.body.longitude,
-          birthdate:req.body.birthdate
+          user_birthdate:req.body.user_birthdate
 
       };
 
