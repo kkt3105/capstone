@@ -62,7 +62,7 @@ exports.setHR = function(req, res){
                 }
             });
         }else{
-            res.writeHead(200, {"Content-Type":"application/json"});
+            res.writeHead(404, {"Content-Type":"application/json"});
             res.end(JSON.stringify(jsonData));
         }
     });
@@ -105,7 +105,7 @@ exports.senior = function(req, res){
                     }
                 });
             }else {
-                res.writeHead(200, {"Content-Type":"application/json"});
+                res.writeHead(404, {"Content-Type":"application/json"});
                 res.end(JSON.stringify(jsonData));
             }
         });
@@ -161,7 +161,7 @@ exports.seniorList = function(req, res){
                 }
             });
         }else {
-            res.writeHead(200, {"Content-Type":"application/json"});
+            res.writeHead(404, {"Content-Type":"application/json"});
             res.end(JSON.stringify(jsonData));
         }
     });
@@ -212,7 +212,7 @@ exports.sendManagementInfo = function(req, res){
             });
 
         }else {
-            res.writeHead(200, {"Content-Type":"application/json"});
+            res.writeHead(404, {"Content-Type":"application/json"});
             res.end(JSON.stringify(jsonData));
         }
     });
@@ -250,7 +250,7 @@ exports.receiveManagementInfo = function (req, res){
                 });
 
         }else {
-            res.writeHead(200, {"Content-Type":"application/json"});
+            res.writeHead(404, {"Content-Type":"application/json"});
             res.end(JSON.stringify(jsonData));
         }
     });
@@ -288,7 +288,7 @@ exports.receiveVolunteerInfo = function (req, res){
                 });
 
         }else {
-            res.writeHead(200, {"Content-Type":"application/json"});
+            res.writeHead(404, {"Content-Type":"application/json"});
             res.end(JSON.stringify(jsonData));
         }
     });

@@ -43,7 +43,7 @@ exports.test = function (req, res){
                 });
 
         }else {
-            res.writeHead(200, {"Content-Type":"application/json"});
+            res.writeHead(404, {"Content-Type":"application/json"});
             res.end(JSON.stringify(jsonData));
         }
     });
@@ -73,7 +73,7 @@ exports.signOut = function(req, res){
             });
         }else {
             jsonData.logout_status=false;
-            res.writeHead(200, {"Content-Type":"application/json"});
+            res.writeHead(404, {"Content-Type":"application/json"});
             res.end(JSON.stringify(jsonData));
         }
     });
@@ -128,15 +128,19 @@ exports.signIn = function(req, res){
                 });
             }
         });
-
+        res.writeHead(200, {
+            "Content-Type":"application/json"
+        });
+        res.end(JSON.stringify(jsonData));
 
     }else{
         jsonData.login_status=false;
+        res.writeHead(404, {
+            "Content-Type":"application/json"
+        });
+        res.end(JSON.stringify(jsonData));
     }
-    res.writeHead(200, {
-        "Content-Type":"application/json"
-    });
-    res.end(JSON.stringify(jsonData));
+
 
   });
 };
@@ -148,33 +152,70 @@ exports.signUp = function(req, res){
       console.log('ERROR! : '+ err);
       throw err;
     }
+    var info = "";
     var signUp=false;
 
     if(db.length != 0){
         signUp=false;
+        info = "이미 가입되어 있는 계정";
       console.log('ID:'+ req.body.login_id +' does already exist!');
     }
-    else if(req.body.login_id.length > 15 ||
-        req.body.login_pw.length > 15 ||
-        req.body.user_type.length > 15 ||
-        req.body.user_name.length > 20 ||
-        req.body.user_gender.length > 4 ||
-        req.body.user_address.length > 100 ||
-        req.body.user_tel.length > 11
-    ){
-      signUp=false;
-      console.log('Input is too long!');
+    else if(req.body.login_id.length > 15){
+        signUp=false;
+        info = "아이디가 너무 깁니다.";
     }
-    else if(req.body.login_id.length == 0 ||
-        req.body.login_pw.length == 0 ||
-        req.body.user_type.length == 0 ||
-        req.body.user_name.length == 0 ||
-        req.body.user_gender.length == 0 ||
-        req.body.user_address.length == 0 ||
-        req.body.user_tel.length == 0
-    ){
+  else if(req.body.login_pw.length > 15){
       signUp=false;
-      console.log('Input should not be empty!');
+      info = "비밀번호가 너무 깁니다.";
+  }
+  else if(req.body.user_type.length > 15){
+      signUp=false;
+      info = "유저 타입 오류";
+  }
+  else if(req.body.user_name.length > 20){
+      signUp=false;
+      info = "이름이 너무 깁니다.";
+  }
+  else if(req.body.user_gender.length > 4){
+      signUp=false;
+      info = "성별 오류";
+  }
+  else if(req.body.user_address.length > 250){
+      signUp=false;
+      info = "주소가 너무 깁니다.";
+  }
+  else if(req.body.user_tel.length > 11){
+      signUp=false;
+      info = "전화번호가 너무 깁니다.";
+  }
+  else if(req.body.login_id.length == 0){
+      signUp=false;
+      info = "아이디가 빈칸입니다.";
+  }
+else if(req.body.login_pw.length ==0){
+    signUp=false;
+    info = "비밀번호가 빈칸입니다.";
+}
+else if(req.body.user_type.length ==0){
+    signUp=false;
+    info = "유저 타입 오류";
+}
+else if(req.body.user_name.length ==0){
+    signUp=false;
+    info = "이름이 빈칸입니다.";
+}
+else if(req.body.user_gender.length ==0){
+    signUp=false;
+    info = "성별 오류";
+}
+else if(req.body.user_address.length ==0){
+    signUp=false;
+    info = "주소가 빈칸입니다.";
+}
+else if(req.body.user_tel.length ==0){
+    signUp=false;
+    info = "전화번호가 빈칸입니다.";
+
   }else {
       signUp = true;
   }
@@ -194,10 +235,10 @@ exports.signUp = function(req, res){
           user_birthdate:req.body.user_birthdate
 
       };
-
       connection.query('INSERT INTO user SET ?', post, function(err, db2){
         if(err){
             signUp = false;
+            info = "DB오류";
             console.log('ERROR! : '+ err);
             throw err;
         }else{
@@ -209,14 +250,20 @@ exports.signUp = function(req, res){
 
     var jsonData={};
     if(signUp){
-        jsonData.signup_status=true;
+        jsonData.status=true;
+        res.writeHead(200, {
+            "Content-Type":"application/json"
+        });
+        res.end(JSON.stringify(jsonData));
     }
     else{
-        jsonData.signup_status=false;
+        jsonData.status=false;
+        jsonData.info = info;
+        res.writeHead(404, {
+            "Content-Type":"application/json"
+        });
+        res.end(JSON.stringify(jsonData));
     }
-    res.writeHead(200, {
-        "Content-Type":"application/json"
-    });
-    res.end(JSON.stringify(jsonData));
+
   });
 };

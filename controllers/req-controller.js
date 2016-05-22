@@ -53,7 +53,7 @@ exports.accept = function(req, res){
                 }
             });
         }else{
-            res.writeHead(200, {"Content-Type":"application/json"});
+            res.writeHead(404, {"Content-Type":"application/json"});
             res.end(JSON.stringify(jsonData));
         }
     });
@@ -78,7 +78,7 @@ exports.list = function(req, res){
                 }
             });
         }else {
-            res.writeHead(200, {"Content-Type":"application/json"});
+            res.writeHead(404, {"Content-Type":"application/json"});
             res.end(JSON.stringify(jsonData));
         }
     });
@@ -146,7 +146,7 @@ exports.request = function(req, res){
                     }
                 });
             }else {
-                res.writeHead(200, {"Content-Type":"application/json"});
+                res.writeHead(404, {"Content-Type":"application/json"});
                 res.end(JSON.stringify(jsonData));
             }
         });
