@@ -119,6 +119,7 @@ exports.seniorList = function(req, res){
         jsonData.auth_status=flag;
         if(flag){
             db.whatType(login_id, function(user_type){
+                console.log(user_type +"");
                 if(user_type == "manager"){
                     connection.query('SELECT * FROM user A WHERE A.login_id IN (SELECT senior_id FROM '+ ManagementInfoTABLE +' WHERE manager_id = '+"'"+login_id+"')", function(err, db, fields){
                         if(err){
@@ -126,6 +127,7 @@ exports.seniorList = function(req, res){
                             console.log('ERROR! : '+ err);
                             throw err;
                         }else{
+                            console.log(db);
                             db_flag = true;
                             jsonData.data = db;
                             jsonData.status = db_flag;
