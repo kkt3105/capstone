@@ -4,6 +4,25 @@ var connection = db.getConnection();
 require('date-utils');
 var reqListTABLE = 'request_list';
 
+var t = setInterval (function(){
+    var db_flag = false;
+
+    var dt = new Date();
+    var d = dt.toFormat('YYYYMMDDHH24MISS');
+    console.log("Request Status Update every 10-minute!");
+    var post={current_status : 2};
+
+    connection.query("UPDATE "+reqListTABLE+ " SET ? where current_status = 0 and "+d+" - timestamp > 1000",post, function(err, db){
+        if(err){
+            db_flag = false;
+        }else{
+            console.log("Updated Successfully!");
+            db_flag = true;
+        }
+        console.log(db);
+    });
+}, 10*1000*60);
+
 exports.accept = function(req, res){
     var db_flag = false;
     var jsonData = {};
@@ -86,6 +105,9 @@ exports.list = function(req, res){
 
 
 exports.request = function(req, res){
+
+    var dt = new Date();
+    var d = dt.toFormat('YYYYMMDDHH24MISS');
         var db_flag = false;
         var jsonData = {};
         db.isAuthenticated(req, res, function(flag, login_id){
@@ -102,7 +124,8 @@ exports.request = function(req, res){
                             date_to: req.body.date_to,
                             details: req.body.details,
                             current_status: 0,
-                            signature: 0
+                            signature: 0,
+                            timestamp:d
                         };
 
                         connection.query('INSERT INTO request_list SET ?', post, function(err, db){
@@ -128,7 +151,8 @@ exports.request = function(req, res){
                             date_to: req.body.date_to,
                             //details: req.body.details,
                             current_status: 0,
-                            signature: 0
+                            signature: 0,
+                            timestamp:d
                         };
 
                         connection.query('INSERT INTO request_list SET ?', post, function(err, db){
