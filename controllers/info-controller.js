@@ -89,7 +89,7 @@ exports.senior = function(req, res){
                             }
                         });
                     }else{
-                        connection.query('SELECT A.user_name, A.user_tel, A.latitude, A.longitude  FROM user A WHERE A.login_id = '+ "'"+req.body.senior_id+"'" , function(err, db, fields){
+                        connection.query('SELECT * FROM user A WHERE A.login_id = '+ "'"+req.body.senior_id+"'" , function(err, db, fields){
                             if(err){
                                 db_flag = false;
                                 console.log('ERROR! : '+ err);
