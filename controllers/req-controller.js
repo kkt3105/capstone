@@ -4,7 +4,7 @@ var connection = db.getConnection();
 require('date-utils');
 var reqListTABLE = 'request_list';
 
-var t = setInterval (function(){
+var t = setInterval (function(){ // every 5-minutes, Check Req. List to update request which passed 10-minutes
     var db_flag = false;
 
     var dt = new Date();
@@ -21,7 +21,7 @@ var t = setInterval (function(){
         }
         console.log(db);
     });
-}, 10*1000*60);
+}, 5*1000*60);
 
 exports.accept = function(req, res){
     var db_flag = false;
