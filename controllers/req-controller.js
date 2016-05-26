@@ -19,7 +19,6 @@ var t = setInterval (function(){ // every 5-minutes, Check Req. List to update r
             console.log("Updated Successfully!");
             db_flag = true;
         }
-        console.log(db);
     });
 }, 5*1000*60);
 

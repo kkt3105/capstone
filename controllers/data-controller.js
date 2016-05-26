@@ -70,7 +70,7 @@ exports.sendActivityLog = function (req, res){
     db.isAuthenticated(req, res, function(flag, login_id){
         jsonData.auth_status=flag;
         if(flag){
-                if( req.body.modified_data.length == 0 || req.body.modified_data.length > 10 ){
+                if( req.body.modified_data < 0 || req.body.modified_data > 9 ){
                         condition = false;
                         console.log('Modified_data is out of range!');
 
@@ -98,25 +98,25 @@ exports.sendActivityLog = function (req, res){
                           console.log('ERROR! : '+ err);
                           throw err;
                       }else{
-                          db_flag = true;
                           console.log('Successfully inserted!');
+                          db_flag=true;
+                          jsonData.status = db_flag;
+                          res.writeHead(200, {"Content-Type":"application/json"});
+                          res.end(JSON.stringify(jsonData));
                       }
                     });
+                }else{
+                    jsonData.status = db_flag;
+                    res.writeHead(404, {"Content-Type":"application/json"});
+                    res.end(JSON.stringify(jsonData));
                 }
 
-        }});
-
-            if(db_flag){
-                jsonData.status=true;
-            }
-            else{
-                jsonData.status=false;
-            }
-            //res.redirect('/');
-            res.writeHead(404, {
-                "Content-Type":"application/json"
-            });
+        }else {
+            res.writeHead(404, {"Content-Type":"application/json"});
             res.end(JSON.stringify(jsonData));
+        }
+
+    });
 
 };
 exports.receiveHeartrateLog = function (req, res){
@@ -134,10 +134,12 @@ exports.receiveHeartrateLog = function (req, res){
             if(req.body.end_of_period != null){
                 end = req.body.end_of_period;
             }
+            qstring = 'SELECT * FROM heartrate_log WHERE login_id='+"'"+login_id+"'";
+
             if(req.body.start_of_period == null & req.body.end_of_period == null){
-                qstring = 'SELECT * FROM heartrate_log WHERE login_id='+"'"+login_id+"' order by date desc limit 0,1";
+                qstring += " order by date desc limit 0,1";
             }else {
-                qstring = 'SELECT * FROM heartrate_log WHERE login_id='+"'"+login_id+"' and date > '"+start+"' and date < "+"'"+end+"'";
+                qstring += " and date > '"+start+"' and date < "+"'"+end+"'";
             }
                 connection.query(qstring+"", function(err, db, fields){
                     if(err){
@@ -167,7 +169,7 @@ exports.receiveActivityLog = function (req, res){
     var start = 2000;
     var end = 2999;
     var jsonData = {};
-
+    var qstring ="";
     db.isAuthenticated(req, res, function(flag, login_id){
         jsonData.auth_status=flag;
         if(flag){
@@ -177,7 +179,17 @@ exports.receiveActivityLog = function (req, res){
             if(req.body.end_of_period != null){
                 end = req.body.end_of_period;
             }
-                connection.query('SELECT * FROM '+ SensorDataTABLE +' WHERE login_id='+"'"+login_id+"' and date > '"+start+"' and date < "+"'"+end+"'", function(err, db, fields){
+            qstring = 'SELECT * FROM activity_log WHERE login_id='+"'"+login_id+"'";
+            if(req.body.type_of_sensor != null){
+                qstring += " and type_of_sensor = '"+req.body.type_of_sensor+"'";
+            }
+
+            if(req.body.start_of_period == null & req.body.end_of_period == null){
+                qstring += " order by date desc limit 0,1";
+            }else {
+                qstring += " and date > '"+start+"' and date < "+"'"+end+"'";
+            }
+                connection.query(qstring+"", function(err, db, fields){
                     if(err){
                         db_flag = false;
                         console.log('ERROR! : '+ err);
