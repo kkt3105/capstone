@@ -68,7 +68,7 @@ exports.setHR = function(req, res){
         }
     });
 }
-exports.senior = function(req, res){
+exports.seniorInfo = function(req, res){
         var db_flag = false;
         var jsonData = {};
 

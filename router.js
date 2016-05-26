@@ -39,7 +39,7 @@ exports.route = function(app) {
   // 노인 목록 인출 - 봉사자(3Km 이내), 노인(3Km 이내), 관리사/id,이름(담당하고 있는)
   app.post('/Senior_List', info.seniorList);
   // 노인 정보 인출(senior_id) - 관리사/모든정보, 봉사자/이름,위치,전화번호 , 노인/이름,위치,전화번호
-  app.post('/Senior', info.senior);
+  app.post('/Senior_Info', info.seniorInfo);
 
   // 요청 기록 인출 - 봉사자, 노인
   app.post('/Request_List', request.list);
