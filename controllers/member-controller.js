@@ -213,7 +213,7 @@ else if(req.body.user_tel.length ==0){
                 low_zone_1 : 40
             }
             if(req.body.user_type == 'senior'){
-                connection.query('INSERT INTO senior_list SET ?', post, function(err, db3){
+                connection.query('INSERT INTO senior_list SET ?', post2, function(err, db3){
                     if(err){
                         signUp = false;
                         info = "DB오류";
