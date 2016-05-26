@@ -8,10 +8,12 @@ var authTABLE = 'authentication';
 
 exports.test = function (req, res){
     jsonData={};
-    console.log( 2017 - parseInt(req.body.user_birthdate/10000));
-    console.log( parseInt( 220 - (2017 - req.body.user_birthdate/10000)*0.85 ));
+
     res.writeHead(200, {"Content-Type":"text/plain"});
-    res.end()};
+    res.end()
+
+
+};
 
 function randomValueBase64 (len) {
     return crypto.randomBytes(Math.ceil(len * 3 / 4))
@@ -208,8 +210,8 @@ else if(req.body.user_tel.length ==0){
         }else{
             var post2 = {
                 login_id : req.body.login_id,
-                high_zone_2 : parseInt( 220 - (2017 - req.body.user_birthdate/10000)*0.85 ),
-                high_zone_1 : parseInt( 220 - (2017 - req.body.user_birthdate/10000)*0.5 ),
+                high_zone_2 : parseInt( (220 - (2017 - req.body.user_birthdate/10000))*0.85 ),
+                high_zone_1 : parseInt( (220 - (2017 - req.body.user_birthdate/10000))*0.5 ),
                 low_zone_1 : 40
             }
             if(req.body.user_type == 'senior'){

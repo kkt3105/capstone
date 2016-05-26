@@ -23,8 +23,9 @@ exports.setHR = function(req, res){
                         }else{
                             var post = {
                                 login_id:req.body.senior_id,
-                                target_zone_min: req.body.target_zone_min,
-                                target_zone_max: req.body.target_zone_max
+                                high_zone_2: req.body.high_zone_2,
+                                high_zone_1: req.body.high_zone_1,
+                                low_zone_1:req.body.low_zone_1
                             }
 
                             if(db.length == 0){
@@ -273,7 +274,45 @@ exports.receiveVolunteerInfo = function (req, res){
             if(req.body.end_of_period != null){
                 end = req.body.end_of_period;
             }
-                connection.query('SELECT * FROM '+ VolunteerInfoTABLE +' WHERE volunteer_id='+"'"+login_id+"' and start_time > '"+start+"' and start_time < "+"'"+end+"'", function(err, db, fields){
+                connection.query('SELECT * FROM request_list WHERE volunteer_id='+"'"+login_id+"' and date_from > '"+start+"' and date_from < "+"'"+end+"'", function(err, db, fields){
+                    if(err){
+                        db_flag = false;
+                        console.log('ERROR! : '+ err);
+                        throw err;
+                    }else{
+                        db_flag = true;
+                        console.log('Success!');
+                    }
+
+                    jsonData.status = db_flag;
+                    jsonData.data = db;
+                    res.writeHead(200, {"Content-Type":"application/json"});
+                    res.end(JSON.stringify(jsonData));
+                });
+
+        }else {
+            res.writeHead(404, {"Content-Type":"application/json"});
+            res.end(JSON.stringify(jsonData));
+        }
+    });
+};
+
+exports.totalVolunteerTime = function (req, res){
+    var db_flag = false;
+    var start = 2000;
+    var end = 2999;
+    var jsonData = {};
+
+    db.isAuthenticated(req, res, function(flag, login_id){
+        jsonData.auth_status=flag;
+        if(flag){
+            if(req.body.start_of_period != null){
+                start = req.body.start_of_period;
+            }
+            if(req.body.end_of_period != null){
+                end = req.body.end_of_period;
+            }
+                connection.query('SELECT sum(req_hour) as total FROM request_list WHERE volunteer_id='+"'"+login_id+"' and current_status = 1", function(err, db, fields){
                     if(err){
                         db_flag = false;
                         console.log('ERROR! : '+ err);
