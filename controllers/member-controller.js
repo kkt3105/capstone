@@ -8,15 +8,10 @@ var authTABLE = 'authentication';
 
 exports.test = function (req, res){
     jsonData={};
-    req.body.date_from
-    console.log(req.body.date_from);
-    console.log(req.body.req_hour);
-    console.log(req.body.date_from*1 + req.body.req_hour*100 + "");
-
-    res.writeHead(200, {"Content-Type":"application/json"});
-    res.end(JSON.stringify(jsonData));
-
-};
+    console.log( 2017 - parseInt(req.body.user_birthdate/10000));
+    console.log( parseInt( 220 - (2017 - req.body.user_birthdate/10000)*0.85 ));
+    res.writeHead(200, {"Content-Type":"text/plain"});
+    res.end()};
 
 function randomValueBase64 (len) {
     return crypto.randomBytes(Math.ceil(len * 3 / 4))
@@ -211,8 +206,29 @@ else if(req.body.user_tel.length ==0){
             console.log('ERROR! : '+ err);
             throw err;
         }else{
-            signUp=true;
-            console.log('Successfully signed up!');
+            var post2 = {
+                login_id : req.body.login_id,
+                high_zone_2 : parseInt( 220 - (2017 - req.body.user_birthdate/10000)*0.85 ),
+                high_zone_1 : parseInt( 220 - (2017 - req.body.user_birthdate/10000)*0.5 ),
+                low_zone_1 : 40
+            }
+            if(req.body.user_type == 'senior'){
+                connection.query('INSERT INTO senior_list SET ?', post, function(err, db3){
+                    if(err){
+                        signUp = false;
+                        info = "DB오류";
+                        console.log('ERROR! : '+ err);
+                        throw err;
+                    }
+                        signUp=true;
+                        console.log('Successfully signed up!');
+                });
+            }else{
+                signUp=true;
+                console.log('Successfully signed up!');
+            }
+            //console.log();
+
         }
       });
     }
