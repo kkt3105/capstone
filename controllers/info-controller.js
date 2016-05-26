@@ -71,6 +71,10 @@ exports.setHR = function(req, res){
 exports.senior = function(req, res){
         var db_flag = false;
         var jsonData = {};
+
+        console.log(req);
+        console.log(req.body);
+
         db.isAuthenticated(req, res, function(flag, login_id){
             jsonData.auth_status=flag;
             if(flag){
