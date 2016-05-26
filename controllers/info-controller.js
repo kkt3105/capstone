@@ -147,7 +147,7 @@ exports.seniorList = function(req, res){
                             var mylat=db[0].latitude;
                             var mylgt=db[0].longitude;
 
-                            connection.query("SELECT *, (6371 * acos(cos(radians('"+mylat+"')) * cos(radians(latitude)) * cos(radians(longitude) - radians('"+mylgt+"')) + sin(radians('"+mylat+"')) * sin(radians(latitude)))) AS distance FROM user WHERE user_type = 'senior' and login_id <> '"+login_id+"' HAVING distance < 3 ORDER BY distance", function(err, db2, fields){
+                            connection.query("SELECT *, (    cast ((6371 * acos(cos(radians('"+mylat+"')) * cos(radians(latitude)) * cos(radians(longitude) - radians('"+mylgt+"')) + sin(radians('"+mylat+"')) * sin(radians(latitude)))) as decimal(7,5)) ) AS distance FROM user WHERE user_type = 'senior' and login_id <> '"+login_id+"' HAVING distance < 3 ORDER BY distance", function(err, db2, fields){
                                 if(err){
                                     db_flag = false;
                                     console.log('ERROR! : '+ err);
