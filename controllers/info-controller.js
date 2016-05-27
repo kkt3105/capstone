@@ -72,6 +72,8 @@ exports.seniorInfo = function(req, res){
         var db_flag = false;
         var jsonData = {};
 
+        console.log(req.body);
+
         db.isAuthenticated(req, res, function(flag, login_id){
             jsonData.auth_status=flag;
             if(flag){
@@ -86,6 +88,7 @@ exports.seniorInfo = function(req, res){
                                 db_flag = true;
                                 jsonData.data = db;
                                 jsonData.status = db_flag;
+                                console.log(jsonData.data);
                                 res.writeHead(200, {"Content-Type":"application/json"});
                                 res.end(JSON.stringify(jsonData));
                             }
@@ -100,6 +103,7 @@ exports.seniorInfo = function(req, res){
                                 db_flag = true;
                                 jsonData.data = db;
                                 jsonData.status = db_flag;
+                                console.log(jsonData.data);
                                 res.writeHead(200, {"Content-Type":"application/json"});
                                 res.end(JSON.stringify(jsonData));
                             }
