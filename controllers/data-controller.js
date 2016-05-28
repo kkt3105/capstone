@@ -40,26 +40,23 @@ exports.sendHeartrateLog = function (req, res){
                       console.log('ERROR! : '+ err);
                       throw err;
                   }else{
-                      db_flag = true;
                       console.log('Successfully inserted!');
+                      db_flag=true;
+                      jsonData.status = db_flag;
+                      res.writeHead(200, {"Content-Type":"application/json"});
+                      res.end(JSON.stringify(jsonData));
                   }
                 });
+            }else{
+                jsonData.status = db_flag;
+                res.writeHead(404, {"Content-Type":"application/json"});
+                res.end(JSON.stringify(jsonData));
             }
-
-    }});
-
-
-        if(db_flag){
-            jsonData.status=true;
+        }else{
+                res.writeHead(404, {"Content-Type":"application/json"});
+                res.end(JSON.stringify(jsonData));
         }
-        else{
-            jsonData.status=false;
-        }
-        //res.redirect('/');
-        res.writeHead(404, {
-            "Content-Type":"application/json"
-        });
-        res.end(JSON.stringify(jsonData));
+    });
 
 };
 
@@ -250,3 +247,5 @@ exports.receiveActivityLog = function (req, res){
     }
 });
 };
+
+export.
