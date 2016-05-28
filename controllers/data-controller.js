@@ -170,44 +170,82 @@ exports.receiveActivityLog = function (req, res){
     var end = 2999;
     var jsonData = {};
     var qstring ="";
+    console.log(req.body);
     db.isAuthenticated(req, res, function(flag, login_id){
         jsonData.auth_status=flag;
         if(flag){
-            if(req.body.start_of_period != null){
-                start = req.body.start_of_period;
-            }
-            if(req.body.end_of_period != null){
-                end = req.body.end_of_period;
-            }
-            qstring = 'SELECT * FROM activity_log WHERE login_id='+"'"+login_id+"'";
-            if(req.body.type_of_sensor != null){
-                qstring += " and type_of_sensor = '"+req.body.type_of_sensor+"'";
-            }
-
-            if(req.body.start_of_period == null & req.body.end_of_period == null){
-                qstring += " order by date desc limit 0,1";
-            }else {
-                qstring += " and date > '"+start+"' and date < "+"'"+end+"'";
-            }
-                connection.query(qstring+"", function(err, db, fields){
-                    if(err){
-                        db_flag = false;
-                        console.log('ERROR! : '+ err);
-                        throw err;
-                    }else{
-                        db_flag = true;
-                        console.log('Success!');
+            db.whatType(login_id, function(user_type){
+                if(user_type == 'manager'){
+                    if(req.body.start_of_period != null){
+                        start = req.body.start_of_period;
+                    }
+                    if(req.body.end_of_period != null){
+                        end = req.body.end_of_period;
+                    }
+                    qstring = 'SELECT * FROM activity_log WHERE login_id='+"'"+req.body.senior_id+"'";
+                    if(req.body.type_of_sensor != null){
+                        qstring += " and type_of_sensor = '"+req.body.type_of_sensor+"'";
                     }
 
-                    jsonData.status = db_flag;
-                    jsonData.data = db;
-                    res.writeHead(200, {"Content-Type":"application/json"});
-                    res.end(JSON.stringify(jsonData));
-                });
+                    if(req.body.start_of_period == null & req.body.end_of_period == null){
+                        qstring += " order by date desc limit 0,1";
+                    }else {
+                        qstring += " and date > '"+start+"' and date < "+"'"+end+"'";
+                    }
+                        connection.query(qstring+"", function(err, db, fields){
+                            if(err){
+                                db_flag = false;
+                                console.log('ERROR! : '+ err);
+                                throw err;
+                            }else{
+                                db_flag = true;
+                                console.log('Success!');
+                            }
 
-        }else {
-            res.writeHead(404, {"Content-Type":"application/json"});
-            res.end(JSON.stringify(jsonData));
+                            jsonData.status = db_flag;
+                            jsonData.data = db;
+                            res.writeHead(200, {"Content-Type":"application/json"});
+                            res.end(JSON.stringify(jsonData));
+                        });
+
+                }else if(user_type == 'senior'){
+                    if(req.body.start_of_period != null){
+                        start = req.body.start_of_period;
+                    }
+                    if(req.body.end_of_period != null){
+                        end = req.body.end_of_period;
+                    }
+                    qstring = 'SELECT * FROM activity_log WHERE login_id='+"'"+login_id+"'";
+                    if(req.body.type_of_sensor != null){
+                        qstring += " and type_of_sensor = '"+req.body.type_of_sensor+"'";
+                    }
+
+                    if(req.body.start_of_period == null & req.body.end_of_period == null){
+                        qstring += " order by date desc limit 0,1";
+                    }else {
+                        qstring += " and date > '"+start+"' and date < "+"'"+end+"'";
+                    }
+                        connection.query(qstring+"", function(err, db, fields){
+                            if(err){
+                                db_flag = false;
+                                console.log('ERROR! : '+ err);
+                                throw err;
+                            }else{
+                                db_flag = true;
+                                console.log('Success!');
+                            }
+
+                            jsonData.status = db_flag;
+                            jsonData.data = db;
+                            res.writeHead(200, {"Content-Type":"application/json"});
+                            res.end(JSON.stringify(jsonData));
+                        });
+                }
+    
+            );
         }
+    }else {
+        res.writeHead(404, {"Content-Type":"application/json"});
+        res.end(JSON.stringify(jsonData));
     });
 };
