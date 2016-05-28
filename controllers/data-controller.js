@@ -247,5 +247,3 @@ exports.receiveActivityLog = function (req, res){
     }
 });
 };
-
-export.
