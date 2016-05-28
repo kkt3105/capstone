@@ -241,11 +241,12 @@ exports.receiveActivityLog = function (req, res){
                             res.end(JSON.stringify(jsonData));
                         });
                 }
-    
-            );
-        }
+
+            });
+
     }else {
         res.writeHead(404, {"Content-Type":"application/json"});
         res.end(JSON.stringify(jsonData));
-    });
+    }
+});
 };
