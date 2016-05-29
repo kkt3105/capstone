@@ -24,6 +24,8 @@ exports.route = function(app) {
 
   // 심박수 정보 인출
   app.post('/Receive_Heartrate_Log', data.receiveHeartrateLog);
+  // 평균 심박수 정보 인출
+  app.post('/Receive_Avg_Heartrate_Log', data.receiveAvgHeartrateLog);
   // 활동량 정보 인출
   app.post('/Receive_Activity_Log', data.receiveActivityLog);
 
