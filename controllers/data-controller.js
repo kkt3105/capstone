@@ -206,8 +206,10 @@ exports.receiveHeartrateLog = function (req, res){
                         end = req.body.end_of_period;
                     }
 
-                    if(req.body.start_of_period == null & req.body.end_of_period == null){
+                    if(req.body.start_of_period == null & req.body.end_of_period == null & req.body.num == null){
                         qstring += " order by date desc limit 0,1";
+                    }else if(req.body.start_of_period == null & req.body.end_of_period == null & req.body.num != null){
+                        qstring += " order by date desc limit 0,"+req.body.num;
                     }else {
                         qstring += " and date > '"+start+"' and date < "+"'"+end+"'";
                     }
