@@ -287,6 +287,7 @@ exports.receiveVolunteerInfo = function (req, res){
     var start = 2000;
     var end = 2999;
     var jsonData = {};
+    var query="";
 
     db.isAuthenticated(req, res, function(flag, login_id){
         jsonData.auth_status=flag;
@@ -297,7 +298,12 @@ exports.receiveVolunteerInfo = function (req, res){
             if(req.body.end_of_period != null){
                 end = req.body.end_of_period;
             }
-                connection.query('SELECT * FROM request_list WHERE volunteer_id='+"'"+login_id+"' and date_from > '"+start+"' and date_from < "+"'"+end+"'", function(err, db, fields){
+            if(req.body.type == 1){
+                query = 'SELECT sum(req_hour) as sum FROM request_list WHERE volunteer_id='+"'"+login_id+"' and date_from > '"+start+"' and date_from < "+"'"+end+"'";
+            }else{
+                query = 'SELECT * FROM request_list WHERE volunteer_id='+"'"+login_id+"' and date_from > '"+start+"' and date_from < "+"'"+end+"'"
+            }
+                connection.query(query, function(err, db, fields){
                     if(err){
                         db_flag = false;
                         console.log('ERROR! : '+ err);
