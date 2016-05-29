@@ -95,6 +95,22 @@ exports.seniorInfo = function(req, res){
                                 res.end(JSON.stringify(jsonData));
                             }
                         });
+                    }else if(user_type == "senior"){
+
+                            connection.query('SELECT * FROM user A WHERE A.login_id = '+ "'"+login_id+"'" , function(err, db, fields){
+                                if(err){
+                                    db_flag = false;
+                                    console.log('ERROR! : '+ err);
+                                    throw err;
+                                }else{
+                                    db_flag = true;
+                                    jsonData.data = db;
+                                    jsonData.status = db_flag;
+                                    console.log(jsonData.data);
+                                    res.writeHead(200, {"Content-Type":"application/json"});
+                                    res.end(JSON.stringify(jsonData));
+                                }
+                            });
                     }else{
                         connection.query('SELECT * FROM user A WHERE A.login_id = '+ "'"+req.body.senior_id+"'" , function(err, db, fields){
                             if(err){
