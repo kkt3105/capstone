@@ -125,7 +125,7 @@ exports.receiveAvgHeartrateLog = function(req, res){
     var qstring ="";
 
     console.log(req.body);
-    
+
     db.isAuthenticated(req, res, function(flag, login_id){
         jsonData.auth_status=flag;
         if(flag){
@@ -164,6 +164,7 @@ exports.receiveAvgHeartrateLog = function(req, res){
 
                             jsonData.status = db_flag;
                             jsonData.data = db;
+                            console.log(db);
                             res.writeHead(200, {"Content-Type":"application/json"});
                             res.end(JSON.stringify(jsonData));
                         });
