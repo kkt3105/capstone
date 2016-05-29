@@ -97,7 +97,7 @@ exports.seniorInfo = function(req, res){
                         });
                     }else if(user_type == "senior"){
 
-                            connection.query('SELECT * FROM user A WHERE A.login_id = '+ "'"+login_id+"'" , function(err, db, fields){
+                        connection.query('SELECT * FROM user A INNER JOIN senior_list B ON A.login_id = B.login_id WHERE A.login_id = '+ "'"+login_id+"'" , function(err, db, fields){
                                 if(err){
                                     db_flag = false;
                                     console.log('ERROR! : '+ err);
