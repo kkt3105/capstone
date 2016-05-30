@@ -83,16 +83,33 @@ exports.list = function(req, res){
     db.isAuthenticated(req, res, function(flag, login_id){
         jsonData.auth_status=flag;
         if(flag){
-            connection.query('SELECT A.current_status, A.senior_id, A.volunteer_id, A.date_from, A.date_to FROM request_list A WHERE senior_id = '+"'"+login_id+"' OR volunteer_id = "+"'"+login_id+"'", function(err, db){
-                if(err){
-                    db_flag=false;
-                    throw err;
-                }else {
-                    db_flag=true;
-                    jsonData.status = db_flag;
-                    jsonData.data = db;
-                    res.writeHead(200, {"Content-Type":"application/json"});
-                    res.end(JSON.stringify(jsonData));
+            db.whatType(login_id, function(user_type){
+                if(user_type == "senior"){
+                    connection.query('SELECT * FROM request_list A INNER JOIN user B ON A.senior_id = B.login_id WHERE A.senior_id = '+"'"+login_id+"'", function(err, db){
+                        if(err){
+                            db_flag=false;
+                            throw err;
+                        }else {
+                            db_flag=true;
+                            jsonData.status = db_flag;
+                            jsonData.data = db;
+                            res.writeHead(200, {"Content-Type":"application/json"});
+                            res.end(JSON.stringify(jsonData));
+                        }
+                    });
+                }else if (user_type == "volunteer"){
+                    connection.query('SELECT * FROM request_list A INNER JOIN user B ON A.volunteer_id = B.login_id WHERE A.volunteer_id = '+"'"+login_id+"'", function(err, db){
+                        if(err){
+                            db_flag=false;
+                            throw err;
+                        }else {
+                            db_flag=true;
+                            jsonData.status = db_flag;
+                            jsonData.data = db;
+                            res.writeHead(200, {"Content-Type":"application/json"});
+                            res.end(JSON.stringify(jsonData));
+                        }
+                    });
                 }
             });
         }else {
