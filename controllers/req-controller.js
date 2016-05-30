@@ -109,6 +109,8 @@ exports.request = function(req, res){
     var d = dt.toFormat('YYYYMMDDHH24MISS');
         var db_flag = false;
         var jsonData = {};
+        console.log(req.body);
+
         db.isAuthenticated(req, res, function(flag, login_id){
             jsonData.auth_status=flag;
             if(flag){
