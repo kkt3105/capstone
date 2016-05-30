@@ -85,7 +85,7 @@ exports.list = function(req, res){
         if(flag){
             db.whatType(login_id, function(user_type){
                 if(user_type == "senior"){
-                    connection.query('SELECT * FROM request_list A INNER JOIN user B ON A.senior_id = B.login_id WHERE A.senior_id = '+"'"+login_id+"'", function(err, db){
+                    connection.query('SELECT * FROM request_list A LEFT OUTER JOIN user B ON A.volunteer_id = B.login_id WHERE A.senior_id = '+"'"+login_id+"'", function(err, db){
                         if(err){
                             db_flag=false;
                             throw err;
@@ -98,7 +98,7 @@ exports.list = function(req, res){
                         }
                     });
                 }else if (user_type == "volunteer"){
-                    connection.query('SELECT * FROM request_list A INNER JOIN user B ON A.volunteer_id = B.login_id WHERE A.volunteer_id = '+"'"+login_id+"'", function(err, db){
+                    connection.query('SELECT * FROM request_list A  WHERE A.volunteer_id = '+"'"+login_id+"'", function(err, db){
                         if(err){
                             db_flag=false;
                             throw err;
