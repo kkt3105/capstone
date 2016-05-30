@@ -36,7 +36,7 @@ exports.accept = function(req, res){
                     var post={
                         current_status:1
                     }
-                    connection.query('UPDATE '+ reqListTABLE + ' SET ? WHERE senior_id='+"'"+login_id+"' AND date_from= '"+req.body.date_from+"'", post, function(err, db){
+                    connection.query("UPDATE "+ reqListTABLE + " SET ? WHERE senior_id = '"+login_id+"' AND date_from = '"+req.body.date_from+"';", post, function(err, db){
                       if(err){
                           db_flag = false;
                           console.log('ERROR! : '+ err);
