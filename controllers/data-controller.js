@@ -14,9 +14,6 @@ exports.sendHeartrateLog = function (req, res){
     var condition = false;
     var jsonData={};
 
-    db.isAuthenticated(req, res, function(flag, login_id){
-        jsonData.auth_status=flag;
-        if(flag){
             if( req.body.heartrate <=0 || req.body.heartrate > 999 ){
                     condition = false;
                     console.log('HR is out of range!');
@@ -29,7 +26,7 @@ exports.sendHeartrateLog = function (req, res){
             var d = dt.toFormat('YYYYMMDDHH24MISS');
             if (condition){
                 var post = {
-                    login_id:login_id,
+                    login_id:req.body.senior_id,
                     date:d,
                     heartrate:req.body.heartrate
                 };
@@ -52,11 +49,7 @@ exports.sendHeartrateLog = function (req, res){
                 res.writeHead(404, {"Content-Type":"application/json"});
                 res.end(JSON.stringify(jsonData));
             }
-        }else{
-                res.writeHead(404, {"Content-Type":"application/json"});
-                res.end(JSON.stringify(jsonData));
-        }
-    });
+
 
 };
 
@@ -64,9 +57,7 @@ exports.sendActivityLog = function (req, res){
     var db_flag = false;
     var condition = false;
     var jsonData={};
-    db.isAuthenticated(req, res, function(flag, login_id){
-        jsonData.auth_status=flag;
-        if(flag){
+
                 if( req.body.modified_data < 0 || req.body.modified_data > 9 ){
                         condition = false;
                         console.log('Modified_data is out of range!');
@@ -83,7 +74,7 @@ exports.sendActivityLog = function (req, res){
                 var d = dt.toFormat('YYYYMMDDHH24MISS');
                 if (condition){
                     var post = {
-                        login_id:login_id,
+                        login_id:req.body.senior_id,
                         type_of_sensor:req.body.type_of_sensor,
                         date:d,
                         modified_data:req.body.modified_data
@@ -108,12 +99,6 @@ exports.sendActivityLog = function (req, res){
                     res.end(JSON.stringify(jsonData));
                 }
 
-        }else {
-            res.writeHead(404, {"Content-Type":"application/json"});
-            res.end(JSON.stringify(jsonData));
-        }
-
-    });
 
 };
 
