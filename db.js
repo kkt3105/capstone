@@ -40,33 +40,6 @@ exports.connect = function(){
           console.log();
       };
   });
-  connection.query('SELECT * FROM senior_list', function(err, res, fields){
-      if(err) {
-          throw err
-      }else {
-          console.log("------------------Senior List------------------")
-          console.log(res)
-          console.log();
-      };
-  });
-  connection.query('SELECT * FROM volunteer_list', function(err, res, fields){
-      if(err) {
-          throw err
-      }else {
-          console.log("------------------Volunteer List------------------")
-          console.log(res)
-          console.log();
-      };
-  });
-  connection.query('SELECT * FROM manager_list', function(err, res, fields){
-      if(err) {
-          throw err
-      }else {
-          console.log("------------------Manager List------------------")
-          console.log(res)
-          console.log();
-      };
-  });
 
   connection.query('SELECT * FROM management_info', function(err, res, fields){
       if(err) {
@@ -88,25 +61,6 @@ exports.connect = function(){
       };
   });
 
-
-  connection.query('SELECT * FROM heartrate_log', function(err, res, fields){
-      if(err) {
-          throw err
-      }else {
-          console.log("------------------HR_LOG List------------------")
-          console.log(res)
-          console.log();
-      };
-  });
-  connection.query('SELECT * FROM activity_log', function(err, res, fields){
-      if(err) {
-          throw err
-      }else {
-          console.log("------------------ACTIVITY_LOG List------------------")
-          console.log(res)
-          console.log();
-      };
-  });
   connection.query('SELECT * FROM request_list', function(err, res, fields){
       if(err) {
           throw err
