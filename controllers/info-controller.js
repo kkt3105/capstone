@@ -299,7 +299,7 @@ exports.receiveVolunteerInfo = function (req, res){
                 end = req.body.end_of_period;
             }
             if(req.body.type == 1){
-                query = 'SELECT sum(req_hour) as sum FROM request_list WHERE volunteer_id='+"'"+login_id+"' and date_from > '"+start+"' and date_from < "+"'"+end+"' and current_status = 1";
+                query = 'SELECT sum(req_hour) as sum FROM request_list WHERE volunteer_id='+"'"+login_id+"' and date_from > '"+start+"' and date_from < "+"'"+end+"' and current_status = 1 and signature != '0'";
             }else{
                 query = 'SELECT * FROM request_list WHERE volunteer_id='+"'"+login_id+"' and date_from > '"+start+"' and date_from < "+"'"+end+"'"
             }
