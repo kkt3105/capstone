@@ -22,6 +22,27 @@ var t = setInterval (function(){ // every 5-minutes, Check Req. List to update r
     });
 }, 5*1000*60);
 
+exports.finishRequest = function(req, res){
+    var db_flag = false;
+    var jsonData = {};
+    console.log(req.body);
+
+    res.writeHead(200, {"Content-Type":"application/json"});
+    res.end(JSON.stringify(jsonData));
+    /*
+    db.isAuthenticated(req, res, function(flag, login_id){
+        jsonData.auth_status=flag;
+        if(flag){
+
+        }else{
+            res.writeHead(404, {"Content-Type":"application/json"});
+            res.end(JSON.stringify(jsonData));
+        }
+    });
+    */
+
+}
+
 exports.accept = function(req, res){
     var db_flag = false;
     var jsonData = {};

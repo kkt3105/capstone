@@ -50,5 +50,5 @@ exports.route = function(app) {
   // 요청 - 봉사자(노인id, 언제, 얼마나), 노인(언제, 얼마나, 내용)
   app.post('/Request', request.request);
 
-
+  app.post('/Finish_Request', request.finishRequest);
 };
