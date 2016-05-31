@@ -81,6 +81,7 @@ exports.accept = function(req, res){
 exports.list = function(req, res){
     var db_flag = false;
     var jsonData = {};
+    console.log(req.body);
     db.isAuthenticated(req, res, function(flag, login_id){
         jsonData.auth_status=flag;
         if(flag){
@@ -100,7 +101,7 @@ exports.list = function(req, res){
                     });
                 }else if (user_type == "volunteer"){
                     if(req.body.type == 1){
-                        connection.query("SELECT * FROM request_list A INNER JOIN user B ON A.senior_id = B.login_id WHERE A.volunteer_id = '"+login_id+"' and signature <> 0", function(err, db){
+                        connection.query("SELECT * FROM request_list A INNER JOIN user B ON A.senior_id = B.login_id WHERE A.volunteer_id = '"+login_id+"' and signature != '0'", function(err, db){
                             if(err){
                                 db_flag=false;
                                 throw err;

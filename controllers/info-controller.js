@@ -341,7 +341,7 @@ exports.totalVolunteerTime = function (req, res){
             if(req.body.end_of_period != null){
                 end = req.body.end_of_period;
             }
-                connection.query('SELECT sum(req_hour) as total FROM request_list WHERE volunteer_id='+"'"+login_id+"' and current_status = 1", function(err, db, fields){
+                connection.query('SELECT sum(req_hour) as total FROM request_list WHERE volunteer_id='+"'"+login_id+"' and current_status = 1 and signature != '0'", function(err, db, fields){
                     if(err){
                         db_flag = false;
                         console.log('ERROR! : '+ err);
