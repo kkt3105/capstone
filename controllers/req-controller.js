@@ -109,6 +109,7 @@ exports.list = function(req, res){
                                 db_flag=true;
                                 jsonData.status = db_flag;
                                 jsonData.data = db;
+                                console.log(db);
                                 res.writeHead(200, {"Content-Type":"application/json"});
                                 res.end(JSON.stringify(jsonData));
                             }
