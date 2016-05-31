@@ -99,19 +99,35 @@ exports.list = function(req, res){
                         }
                     });
                 }else if (user_type == "volunteer"){
-                    connection.query('SELECT * FROM request_list A INNER JOIN user B ON A.senior_id = B.login_id WHERE A.volunteer_id = '+"'"+login_id+
-                                    "' UNION SELECT * FROM request_list A INNER JOIN user B ON A.senior_id = B.login_id WHERE A.current_status = 0 AND A.req_type = 0", function(err, db){
-                        if(err){
-                            db_flag=false;
-                            throw err;
-                        }else {
-                            db_flag=true;
-                            jsonData.status = db_flag;
-                            jsonData.data = db;
-                            res.writeHead(200, {"Content-Type":"application/json"});
-                            res.end(JSON.stringify(jsonData));
-                        }
-                    });
+                    if(req.body.type == 1){
+                        connection.query("SELECT * FROM request_list A INNER JOIN user B ON A.senior_id = B.login_id WHERE A.volunteer_id = '"+login_id+"' and signature != 0", function(err, db){
+                            if(err){
+                                db_flag=false;
+                                throw err;
+                            }else {
+                                db_flag=true;
+                                jsonData.status = db_flag;
+                                jsonData.data = db;
+                                res.writeHead(200, {"Content-Type":"application/json"});
+                                res.end(JSON.stringify(jsonData));
+                            }
+                        });
+                    }else{
+                        connection.query('SELECT * FROM request_list A INNER JOIN user B ON A.senior_id = B.login_id WHERE A.volunteer_id = '+"'"+login_id+
+                                        "' UNION SELECT * FROM request_list A INNER JOIN user B ON A.senior_id = B.login_id WHERE A.current_status = 0 AND A.req_type = 0", function(err, db){
+                            if(err){
+                                db_flag=false;
+                                throw err;
+                            }else {
+                                db_flag=true;
+                                jsonData.status = db_flag;
+                                jsonData.data = db;
+                                res.writeHead(200, {"Content-Type":"application/json"});
+                                res.end(JSON.stringify(jsonData));
+                            }
+                        });
+                    }
+
                 }
             });
         }else {
@@ -171,7 +187,7 @@ exports.request = function(req, res){
                             date_from: req.body.date_from,
                             req_hour:req.body.req_hour*1,
                             date_to: req.body.date_from*1 + req.body.req_hour*100 + "",
-                            //details: req.body.details,
+                            details: req.body.details,
                             current_status: 0,
                             signature: 0,
                             timestamp:d
