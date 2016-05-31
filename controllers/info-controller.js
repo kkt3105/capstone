@@ -135,6 +135,36 @@ exports.seniorInfo = function(req, res){
         });
 }
 
+exports.userInfo = function(req, res){
+        var db_flag = false;
+        var jsonData = {};
+
+        console.log(req.body);
+
+        db.isAuthenticated(req, res, function(flag, login_id){
+            jsonData.auth_status=flag;
+            if(flag){
+                connection.query('SELECT * FROM user A WHERE A.login_id = '+ "'"+login_id+"'" , function(err, db, fields){
+                    if(err){
+                        db_flag = false;
+                        console.log('ERROR! : '+ err);
+                        throw err;
+                    }else{
+                        db_flag = true;
+                        jsonData.data = db;
+                        jsonData.status = db_flag;
+                        console.log(jsonData.data);
+                        res.writeHead(200, {"Content-Type":"application/json"});
+                        res.end(JSON.stringify(jsonData));
+                    }
+                });
+            }else {
+                res.writeHead(404, {"Content-Type":"application/json"});
+                res.end(JSON.stringify(jsonData));
+            }
+        });
+}
+
 exports.seniorList = function(req, res){
     var db_flag=false;
     var jsonData={};
