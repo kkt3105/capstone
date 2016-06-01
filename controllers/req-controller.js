@@ -37,7 +37,7 @@ exports.finishRequest = function(req, res){
                 if(err){
                     throw err;
                 }
-                console.log("File Write Success!");
+                console.log("File Write Success! "+filename);
             });
             jsonData.status = true;
             res.writeHead(200, {"Content-Type":"application/json"});
