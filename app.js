@@ -41,3 +41,29 @@ require('./db.js').connect();
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
+//
+var gcm = require('node-gcm');
+
+var message = new gcm.Message();
+
+var message = new gcm.Message({
+    collapseKey: 'Gcm Test',
+    delayWhileIdle: true,
+    timeToLive: 3,
+    data: {
+        data: 'Gcm Receive Success'
+    }
+});
+/*
+var server_api_key ='AIzaSyBdvyTF-YfPkjmGS1bwmFriYopBW3IlSGQ';
+var sender = new gcm.Sender(server_api_key);
+var registrationIds = [];
+
+
+var token = 'cbVzdSH1RDY:APA91bHzKODcw-d21XlPDE0BcwQ18aDM7DZvOS9YIiT0xhpDLRglPdWVFytiA6wnEishA4zUH63fDK83auSsRIBbmoa0qPVuKpb9is3Od_BqzuymCXgyhMq8u4tDEOMqaJ60oDLWmjR2';
+registrationIds.push(token);
+
+sender.send(message, registrationIds, 4, function (err, result) {
+    console.log(result);
+});
+*/

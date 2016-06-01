@@ -65,14 +65,15 @@ exports.signIn = function(req, res){
     }
     var jsonData={};
     if(login){
-        var login_token = randomValueBase64(13).toString();
+        //var login_token = randomValueBase64(13).toString();
+        //jsonData.token = req.body.token;
         jsonData.login_status=true;
-        jsonData.token=login_token;
+        //jsonData.token=login_token;
         jsonData.user_type=db[0].user_type;
 
         var post = {
             login_id:req.body.login_id,
-            token:login_token
+            token:req.body.token
         };
 
         connection.query('SELECT * FROM '+ authTABLE + ' WHERE login_id='+"'"+req.body.login_id+"'", function(err, db2, fields){
@@ -85,7 +86,7 @@ exports.signIn = function(req, res){
                   console.log('token inserted!');
                 });
             }else {
-                connection.query('UPDATE '+ authTABLE + ' SET token='+"'"+login_token+"'"+ ' WHERE login_id='+"'"+req.body.login_id+"'", function(err, db3){
+                connection.query('UPDATE '+ authTABLE + ' SET token='+"'"+req.body.token+"'"+ ' WHERE login_id='+"'"+req.body.login_id+"'", function(err, db3){
                   if(err){
                       console.log('ERROR! : '+ err);
                       throw err;
