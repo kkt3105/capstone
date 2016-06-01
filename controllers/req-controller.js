@@ -71,7 +71,7 @@ exports.getSignature = function(req, res){
             var filename = req.body.senior_id + "_" +req.body.date_from;
             fs.readFile("/home/pi/node-capstone/capstone/signatures/" + filename, 'utf8', function(err,data){
                 if(err){
-                    es.writeHead(404, {"Content-Type":"application/json"});
+                    res.writeHead(404, {"Content-Type":"application/json"});
                     res.end(JSON.stringify(jsonData));
                 }
                 console.log("File Read Success! "+filename);
