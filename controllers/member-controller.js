@@ -47,6 +47,7 @@ exports.signOut = function(req, res){
 };
 
 exports.signIn = function(req, res){
+    console.log(req.body);
   connection.query('SELECT * FROM '+ TABLE + ' WHERE login_id='+"'"+req.body.login_id+"'", function(err, db, fields){
     var login;
     if(err) { // Error
