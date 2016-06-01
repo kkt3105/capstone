@@ -33,7 +33,7 @@ exports.finishRequest = function(req, res){
         if(flag){
             // login_id (senior_id)와 date_from 을 primary로 하여 signature = filepath로 업데이트
             var filename = login_id + "_" +req.body.date_from;
-            fs.writeFile(filename, req.body.encoded_data, 'utf8', function(err){
+            fs.writeFile(__dirname + "/signatures/" + filename, req.body.encoded_data, 'utf8', function(err){
                 if(err){
                     throw err;
                 }
