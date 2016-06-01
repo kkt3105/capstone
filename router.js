@@ -51,4 +51,5 @@ exports.route = function(app) {
   app.post('/Request', request.request);
 
   app.post('/Finish_Request', request.finishRequest);
+  app.post('/Get_Signature', request.getSignature);
 };
