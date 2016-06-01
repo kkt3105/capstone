@@ -37,7 +37,7 @@ exports.finishRequest = function(req, res){
                     throw err;
                 }
                 var post={
-                    sigature:filename
+                    signature:filename
                 }
                 console.log("File Write Success! "+filename);
                 connection.query("UPDATE "+ reqListTABLE + " SET ? WHERE senior_id = '"+login_id+"' AND date_from = '"+req.body.date_from+"';", post, function(err, db){
