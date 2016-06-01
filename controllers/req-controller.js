@@ -60,6 +60,29 @@ exports.finishRequest = function(req, res){
         }
     });
 }
+exports.getSignature = function(req, res){
+    var db_flag = false;
+    var jsonData = {};
+    // login
+    db.isAuthenticated(req, res, function(flag, login_id){
+        jsonData.auth_status=flag;
+        if(flag){
+            // login_id (senior_id)와 date_from 을 primary로 하여 signature = filepath로 업데이트
+            var filename = req.body.senior_id + "_" +req.body.date_from;
+            fs.readFile("/home/pi/node-capstone/capstone/signatures/" + filename, 'utf8', function(err,data){
+                if(err){
+                    throw err;
+                }
+                jsonData.data = data;
+                console.log("File Read Success! "+filename);
+
+            });
+        }else{
+            res.writeHead(404, {"Content-Type":"application/json"});
+            res.end(JSON.stringify(jsonData));
+        }
+    });
+}
 
 exports.accept = function(req, res){
     var db_flag = false;
