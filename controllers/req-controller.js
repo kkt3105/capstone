@@ -26,7 +26,6 @@ var t = setInterval (function(){ // every 5-minutes, Check Req. List to update r
 exports.finishRequest = function(req, res){
     var db_flag = false;
     var jsonData = {};
-    console.log(req.body);
     // login
     db.isAuthenticated(req, res, function(flag, login_id){
         jsonData.auth_status=flag;
@@ -37,11 +36,24 @@ exports.finishRequest = function(req, res){
                 if(err){
                     throw err;
                 }
+                var post={
+                    sigature:filename
+                }
                 console.log("File Write Success! "+filename);
+                connection.query("UPDATE "+ reqListTABLE + " SET ? WHERE senior_id = '"+login_id+"' AND date_from = '"+req.body.date_from+"';", post, function(err, db){
+                  if(err){
+                      db_flag = false;
+                      console.log('ERROR! : '+ err);
+                      throw err;
+                  }else{
+                      console.log("Successfully Update request_list.signature!");
+                      db_flag = true;
+                      jsonData.status = db_flag;
+                      res.writeHead(200, {"Content-Type":"application/json"});
+                      res.end(JSON.stringify(jsonData));
+                  }
+                });
             });
-            jsonData.status = true;
-            res.writeHead(200, {"Content-Type":"application/json"});
-            res.end(JSON.stringify(jsonData));
         }else{
             res.writeHead(404, {"Content-Type":"application/json"});
             res.end(JSON.stringify(jsonData));
