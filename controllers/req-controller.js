@@ -73,8 +73,11 @@ exports.getSignature = function(req, res){
                 if(err){
                     throw err;
                 }
-                jsonData.data = data;
                 console.log("File Read Success! "+filename);
+                jsonData.data = data;
+                jsonData.status = true;
+                res.writeHead(200, {"Content-Type":"application/json"});
+                res.end(JSON.stringify(jsonData));
 
             });
         }else{
