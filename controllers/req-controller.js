@@ -1,3 +1,4 @@
+var fs = require('fs');
 var mysql = require('mysql');
 var db=require('../db.js');
 var connection = db.getConnection();
@@ -26,21 +27,26 @@ exports.finishRequest = function(req, res){
     var db_flag = false;
     var jsonData = {};
     console.log(req.body);
-
-    res.writeHead(200, {"Content-Type":"application/json"});
-    res.end(JSON.stringify(jsonData));
-    /*
+    // login
     db.isAuthenticated(req, res, function(flag, login_id){
         jsonData.auth_status=flag;
         if(flag){
-
+            // login_id (senior_id)와 date_from 을 primary로 하여 signature = filepath로 업데이트
+            var filename = login_id + "_" +req.body.date_from;
+            fs.writeFile(filename, req.body.encoded_data, 'utf8', function(err){
+                if(err){
+                    throw err;
+                }
+                console.log("File Write Success!");
+            });
+            jsonData.status = true;
+            res.writeHead(200, {"Content-Type":"application/json"});
+            res.end(JSON.stringify(jsonData));
         }else{
             res.writeHead(404, {"Content-Type":"application/json"});
             res.end(JSON.stringify(jsonData));
         }
     });
-    */
-
 }
 
 exports.accept = function(req, res){
