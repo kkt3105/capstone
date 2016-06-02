@@ -1,4 +1,5 @@
 var fs = require('fs');
+var gcm = require('node-gcm');
 var mysql = require('mysql');
 var db=require('../db.js');
 var connection = db.getConnection();
@@ -239,6 +240,51 @@ exports.request = function(req, res){
                                 db_flag=false;
                                 throw err;
                             }else {
+
+                                connection.query("SELECT A.latitude, A.longitude FROM user A WHERE login_id = '"+login_id+"'", function(err, db, fields){
+                                    if(err){
+                                        db_flag = false;
+                                        console.log('ERROR! : '+ err);
+                                        throw err;
+                                    }else{
+                                        var mylat=db[0].latitude;
+                                        var mylgt=db[0].longitude;
+
+                                        connection.query("SELECT token FROM authentication A INNER JOIN user B ON A.login_id = B.login_id WHERE B.user_type = 'volunteer' and ( cast ((6371 * acos(cos(radians('"+mylat+"')) * cos(radians(latitude)) * cos(radians(longitude) - radians('"+mylgt+"')) + sin(radians('"+mylat+"')) * sin(radians(latitude)))) as decimal(7,2)) ) < 3", function(err, db){
+                                            if(err){
+                                                throw err;
+                                            }else {
+                                                var message = new gcm.Message();
+                                                var message = new gcm.Message({
+                                                    collapseKey: 'Gcm Test',
+                                                    delayWhileIdle: true,
+                                                    timeToLive: 3,
+                                                    data: {
+                                                        data: 'Gcm Receive Success'
+                                                    }
+                                                });
+
+                                                var server_api_key ='AIzaSyBdvyTF-YfPkjmGS1bwmFriYopBW3IlSGQ';
+                                                var sender = new gcm.Sender(server_api_key);
+                                                var registrationIds = [];
+
+                                                for(i=0; i<db.length; i++){
+                                                    console.log(i + " 3km 내의 자원봉사자 토큰 " + db[i].token);
+                                                    registrationIds.push(db[i].token);
+                                                }
+                                                if(db.length != 0){
+                                                    sender.send(message, registrationIds, 4, function (err, result) {
+                                                        console.log(result);
+                                                    });
+                                                }
+                                            }
+                                        });
+                                    }
+                                });
+
+
+
+
                                 db_flag=true;
                                 jsonData.status = db_flag;
                                 res.writeHead(200, {"Content-Type":"application/json"});
@@ -267,6 +313,36 @@ exports.request = function(req, res){
                                 db_flag=false;
                                 throw err;
                             }else {
+                                connection.query("SELECT token FROM authentication where login_id ='" + req.body.senior_id + "'", function(err, db){
+                                    if(err){
+                                        throw err;
+                                    }else {
+                                        var message = new gcm.Message();
+                                        var message = new gcm.Message({
+                                            collapseKey: 'Gcm Test',
+                                            delayWhileIdle: true,
+                                            timeToLive: 3,
+                                            data: {
+                                                data: 'Gcm Receive Success'
+                                            }
+                                        });
+
+                                        var server_api_key ='AIzaSyBdvyTF-YfPkjmGS1bwmFriYopBW3IlSGQ';
+                                        var sender = new gcm.Sender(server_api_key);
+                                        var registrationIds = [];
+
+                                        for(i=0; i<db.length; i++){
+                                            console.log(i + " 해당 노인 토큰 " + db[i].token);
+                                            registrationIds.push(db[i].token);
+                                        }
+                                        if(db.length != 0){
+                                            sender.send(message, registrationIds, 4, function (err, result) {
+                                                console.log(result);
+                                            });
+                                        }
+                                    }
+                                });
+
                                 db_flag=true;
                                 jsonData.status = db_flag;
                                 res.writeHead(200, {"Content-Type":"application/json"});

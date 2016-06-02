@@ -2,16 +2,44 @@ var mysql = require('mysql');
 var crypto = require('crypto');
 var db=require('../db.js');
 var connection = db.getConnection();
+var gcm = require('node-gcm');//
 
 var TABLE = 'user';
 var authTABLE = 'authentication';
 
 exports.test = function (req, res){
+    connection.query("SELECT token FROM authentication where login_id ='" + req.body.senior_id + "'", function(err, db){
+        if(err){
+            throw err;
+        }else {
+            var message = new gcm.Message();
+            var message = new gcm.Message({
+                collapseKey: 'Gcm Test',
+                delayWhileIdle: true,
+                timeToLive: 3,
+                data: {
+                    data: 'Gcm Receive Success'
+                }
+            });
+
+            var server_api_key ='AIzaSyBdvyTF-YfPkjmGS1bwmFriYopBW3IlSGQ';
+            var sender = new gcm.Sender(server_api_key);
+            var registrationIds = [];
+
+            for(i=0; i<db.length; i++){
+                console.log(i + " 해당 노인 토큰 " + db[i].token);
+                registrationIds.push(db[i].token);
+            }
+            if(db.length != 0){
+                sender.send(message, registrationIds, 4, function (err, result) {
+                    console.log(result);
+                });
+            }
+        }
+    });
     jsonData={};
-
-    res.writeHead(200, {"Content-Type":"text/plain"});
-    res.end()
-
+    res.writeHead(200, {"Content-Type":"application/json"});
+    res.end(JSON.stringify(jsonData));
 
 };
 
