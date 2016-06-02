@@ -1,7 +1,7 @@
 var mysql = require('mysql');
 var db=require('../db.js');
 var connection = db.getConnection();
-
+var gcm = require('node-gcm');
 require('date-utils');
 
 var HeartRateTABLE = 'heartrate_log';
@@ -37,11 +37,118 @@ exports.sendHeartrateLog = function (req, res){
                       console.log('ERROR! : '+ err);
                       throw err;
                   }else{
-                      console.log('Successfully inserted!');
-                      db_flag=true;
-                      jsonData.status = db_flag;
-                      res.writeHead(200, {"Content-Type":"application/json"});
-                      res.end(JSON.stringify(jsonData));
+
+                      connection.query("SELECT high_zone_2, high_zone_1, low_zone_1 FROM user A INNER JOIN senior_list B ON A.login_id = B.login_id WHERE A.login_id = '"+req.body.senior_id+"'", function(err, db, fields){
+                          if(err){
+                              db_flag = false;
+                              console.log('ERROR! : '+ err);
+                              throw err;
+                          }else{
+                              var hr = req.body.heartrate;
+                              var h2=db[0].high_zone_2;
+                              var h1=db[0].high_zone_1;
+                              var l1=db[0].low_zone_1;
+                              if(hr >= h2){
+                                  jsonData.hr_status = 2
+
+                              }else if(hr < h2 && hr >= h1){
+                                  jsonData.hr_status = 1
+
+                              }else if(hr < h1 && hr > l1){
+                                  jsonData.hr_status = 0
+
+                              }else if(hr <= l1){
+                                  jsonData.hr_status = -1
+
+                              }
+                              if (jsonData.hr_status == 2 || jsonData.hr_status == -1){
+                                  //관리사 요청
+                                  connection.query("SELECT token FROM authentication A INNER JOIN management_info B ON A.login_id = B.manager_id WHERE B.senior_id = '"+req.body.senior_id+"'", function(err, db){
+                                      if(err){
+                                          throw err;
+                                      }else {
+                                          var message = new gcm.Message();
+                                          var message = new gcm.Message({
+                                              collapseKey: 'Gcm Test',
+                                              delayWhileIdle: true,
+                                              timeToLive: 3,
+                                              data: {
+                                                  data: 'Gcm Receive Success'
+                                              }
+                                          });
+
+                                          var server_api_key ='AIzaSyBdvyTF-YfPkjmGS1bwmFriYopBW3IlSGQ';
+                                          var sender = new gcm.Sender(server_api_key);
+                                          var registrationIds = [];
+
+                                          for(i=0; i<db.length; i++){
+                                              console.log(i + " 담당관리사 토큰 " + db[i].token);
+                                              registrationIds.push(db[i].token);
+                                          }
+                                          if(db.length != 0){
+                                              sender.send(message, registrationIds, 4, function (err, result) {
+                                                  console.log(result);
+                                              });
+                                          }
+                                      }
+                                  });
+                              }else if(jsonData.hr_status == 1){
+                                  //주변 독거노인
+                                  connection.query("SELECT A.latitude, A.longitude FROM user A WHERE login_id = '"+req.body.senior_id+"'", function(err, db, fields){
+                                      if(err){
+                                          db_flag = false;
+                                          console.log('ERROR! : '+ err);
+                                          throw err;
+                                      }else{
+                                          var mylat=db[0].latitude;
+                                          var mylgt=db[0].longitude;
+
+                                          connection.query("SELECT token FROM authentication A INNER JOIN user B ON A.login_id = B.login_id WHERE B.user_type = 'senior' and ( cast ((6371 * acos(cos(radians('"+mylat+"')) * cos(radians(latitude)) * cos(radians(longitude) - radians('"+mylgt+"')) + sin(radians('"+mylat+"')) * sin(radians(latitude)))) as decimal(7,2)) ) < 3", function(err, db){
+                                              if(err){
+                                                  throw err;
+                                              }else {
+                                                  var message = new gcm.Message();
+                                                  var message = new gcm.Message({
+                                                      collapseKey: 'Gcm Test',
+                                                      delayWhileIdle: true,
+                                                      timeToLive: 3,
+                                                      data: {
+                                                          data: 'Gcm Receive Success'
+                                                      }
+                                                  });
+
+                                                  var server_api_key ='AIzaSyBdvyTF-YfPkjmGS1bwmFriYopBW3IlSGQ';
+                                                  var sender = new gcm.Sender(server_api_key);
+                                                  var registrationIds = [];
+
+                                                  for(i=0; i<db.length; i++){
+                                                      console.log(i + " 3km 내의 독거노인 토큰 " + db[i].token);
+                                                      registrationIds.push(db[i].token);
+                                                  }
+                                                  if(db.length != 0){
+                                                      sender.send(message, registrationIds, 4, function (err, result) {
+                                                          console.log(result);
+                                                      });
+                                                  }
+                                              }
+                                          });
+                                      }
+                                  });
+                              }
+                              console.log("jsonData.hr_status : "+jsonData.hr_status);
+                              console.log('Successfully inserted!');
+                              db_flag=true;
+                              jsonData.status = db_flag;
+                              res.writeHead(200, {"Content-Type":"application/json"});
+                              res.end(JSON.stringify(jsonData));
+                          }
+                      });
+                      //
+                    //   console.log('Successfully inserted!');
+                    //   db_flag=true;
+                    //   jsonData.status = db_flag;
+                    //   res.writeHead(200, {"Content-Type":"application/json"});
+                    //   res.end(JSON.stringify(jsonData));
                   }
                 });
             }else{
