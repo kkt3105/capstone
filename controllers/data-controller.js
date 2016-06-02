@@ -38,7 +38,7 @@ exports.sendHeartrateLog = function (req, res){
                       throw err;
                   }else{
 
-                      connection.query("SELECT high_zone_2, high_zone_1, low_zone_1 FROM user A INNER JOIN senior_list B ON A.login_id = B.login_id WHERE A.login_id = '"+req.body.senior_id+"'", function(err, db, fields){
+                      connection.query("SELECT high_zone_2, high_zone_1, low_zone_1, A.user_name FROM user A INNER JOIN senior_list B ON A.login_id = B.login_id WHERE A.login_id = '"+req.body.senior_id+"'", function(err, db, fields){
                           if(err){
                               db_flag = false;
                               console.log('ERROR! : '+ err);
@@ -48,6 +48,8 @@ exports.sendHeartrateLog = function (req, res){
                               var h2=db[0].high_zone_2;
                               var h1=db[0].high_zone_1;
                               var l1=db[0].low_zone_1;
+                              var uname = db[0].user_name;
+                              console.log("1"+uname);
                               if(hr >= h2){
                                   jsonData.hr_status = 2
 
@@ -73,9 +75,11 @@ exports.sendHeartrateLog = function (req, res){
                                               delayWhileIdle: true,
                                               timeToLive: 3,
                                               data: {
-                                                  data: 'high2'
+                                                  data: 'high2',
+                                                  name: uname
                                               }
                                           });
+                                          console.log("2"+uname);
 
                                           var server_api_key ='AIzaSyBdvyTF-YfPkjmGS1bwmFriYopBW3IlSGQ';
                                           var sender = new gcm.Sender(server_api_key);
@@ -103,7 +107,7 @@ exports.sendHeartrateLog = function (req, res){
                                           var mylat=db[0].latitude;
                                           var mylgt=db[0].longitude;
 
-                                          connection.query("SELECT token FROM authentication A INNER JOIN user B ON A.login_id = B.login_id WHERE B.user_type = 'senior' and A.login_id != '"+req.body.senior_id+"' and ( cast ((6371 * acos(cos(radians('"+mylat+"')) * cos(radians(latitude)) * cos(radians(longitude) - radians('"+mylgt+"')) + sin(radians('"+mylat+"')) * sin(radians(latitude)))) as decimal(7,2)) ) < 3", function(err, db){
+                                          connection.query("SELECT token FROM authentication A INNER JOIN user B ON A.login_id = B.login_id WHERE (B.user_type = 'senior' or B.user_type = 'volunteer') and A.login_id != '"+req.body.senior_id+"' and ( cast ((6371 * acos(cos(radians('"+mylat+"')) * cos(radians(latitude)) * cos(radians(longitude) - radians('"+mylgt+"')) + sin(radians('"+mylat+"')) * sin(radians(latitude)))) as decimal(7,2)) ) < 3", function(err, db){
                                               if(err){
                                                   throw err;
                                               }else {
@@ -113,7 +117,8 @@ exports.sendHeartrateLog = function (req, res){
                                                       delayWhileIdle: true,
                                                       timeToLive: 3,
                                                       data: {
-                                                          data: 'high1'
+                                                          data: 'high1',
+                                                          name: uname
                                                       }
                                                   });
 
