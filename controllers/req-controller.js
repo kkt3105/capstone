@@ -260,7 +260,7 @@ exports.request = function(req, res){
                                                     delayWhileIdle: true,
                                                     timeToLive: 3,
                                                     data: {
-                                                        data: 'Gcm Receive Success'
+                                                        data: 'req0'
                                                     }
                                                 });
 
@@ -323,7 +323,7 @@ exports.request = function(req, res){
                                             delayWhileIdle: true,
                                             timeToLive: 3,
                                             data: {
-                                                data: 'Gcm Receive Success'
+                                                data: 'req1'
                                             }
                                         });
 
