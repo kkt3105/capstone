@@ -351,6 +351,8 @@ exports.request = function(req, res){
                                         });
                                     }
                                 }
+
+
                                 db_flag=true;
                                 jsonData.status = db_flag;
                                 res.writeHead(200, {"Content-Type":"application/json"});
