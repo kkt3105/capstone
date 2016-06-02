@@ -35,7 +35,8 @@ exports.finishRequest = function(req, res){
             var filename = login_id + "_" +req.body.date_from;
             fs.writeFile("/home/pi/node-capstone/capstone/signatures/" + filename, req.body.encoded_data, 'utf8', function(err){
                 if(err){
-                    throw err;
+                    res.writeHead(404, {"Content-Type":"application/json"});
+                    res.end(JSON.stringify(jsonData));
                 }
                 var post={
                     signature:filename
@@ -106,9 +107,8 @@ exports.accept = function(req, res){
                     }
                     connection.query("UPDATE "+ reqListTABLE + " SET ? WHERE senior_id = '"+login_id+"' AND date_from = '"+req.body.date_from+"';", post, function(err, db){
                       if(err){
-                          db_flag = false;
-                          console.log('ERROR! : '+ err);
-                          throw err;
+                          res.writeHead(404, {"Content-Type":"application/json"});
+                          res.end(JSON.stringify(jsonData));
                       }else{
                           console.log("Successfully accept!");
                           db_flag = true;
@@ -126,9 +126,8 @@ exports.accept = function(req, res){
                     }
                     connection.query('UPDATE '+ reqListTABLE + ' SET ? WHERE senior_id='+"'"+req.body.senior_id+"' AND date_from= '"+req.body.date_from+"'", post, function(err, db){
                       if(err){
-                          db_flag = false;
-                          console.log('ERROR! : '+ err);
-                          throw err;
+                          res.writeHead(404, {"Content-Type":"application/json"});
+                          res.end(JSON.stringify(jsonData));
                       }else{
                           console.log("Successfully accept!");
                           db_flag = true;
@@ -157,8 +156,8 @@ exports.list = function(req, res){
                 if(user_type == "senior"){
                     connection.query('SELECT * FROM request_list A LEFT OUTER JOIN user B ON A.volunteer_id = B.login_id WHERE A.senior_id = '+"'"+login_id+"'", function(err, db){
                         if(err){
-                            db_flag=false;
-                            throw err;
+                            res.writeHead(404, {"Content-Type":"application/json"});
+                            res.end(JSON.stringify(jsonData));
                         }else {
                             db_flag=true;
                             jsonData.status = db_flag;
@@ -171,8 +170,8 @@ exports.list = function(req, res){
                     if(req.body.type == 1){
                         connection.query("SELECT * FROM request_list A INNER JOIN user B ON A.senior_id = B.login_id WHERE A.volunteer_id = '"+login_id+"' and signature != '0'", function(err, db){
                             if(err){
-                                db_flag=false;
-                                throw err;
+                                res.writeHead(404, {"Content-Type":"application/json"});
+                                res.end(JSON.stringify(jsonData));
                             }else {
                                 db_flag=true;
                                 jsonData.status = db_flag;
@@ -186,8 +185,8 @@ exports.list = function(req, res){
                         connection.query('SELECT * FROM request_list A INNER JOIN user B ON A.senior_id = B.login_id WHERE A.volunteer_id = '+"'"+login_id+
                                         "' UNION SELECT * FROM request_list A INNER JOIN user B ON A.senior_id = B.login_id WHERE A.current_status = 0 AND A.req_type = 0", function(err, db){
                             if(err){
-                                db_flag=false;
-                                throw err;
+                                res.writeHead(404, {"Content-Type":"application/json"});
+                                res.end(JSON.stringify(jsonData));
                             }else {
                                 db_flag=true;
                                 jsonData.status = db_flag;
@@ -238,21 +237,22 @@ exports.request = function(req, res){
                         connection.query('INSERT INTO request_list SET ?', post, function(err, db){
                             if(err){
                                 db_flag=false;
-                                throw err;
+                                res.writeHead(404, {"Content-Type":"application/json"});
+                                res.end(JSON.stringify(jsonData));
                             }else {
 
                                 connection.query("SELECT A.latitude, A.longitude, A.user_name FROM user A WHERE login_id = '"+login_id+"'", function(err, db, fields){
                                     if(err){
-                                        db_flag = false;
-                                        console.log('ERROR! : '+ err);
-                                        throw err;
+                                        res.writeHead(404, {"Content-Type":"application/json"});
+                                        res.end(JSON.stringify(jsonData));
                                     }else{
                                         var mylat=db[0].latitude;
                                         var mylgt=db[0].longitude;
                                         var uname=db[0].user_name;
                                         connection.query("SELECT token FROM authentication A INNER JOIN user B ON A.login_id = B.login_id WHERE B.user_type = 'volunteer' and ( cast ((6371 * acos(cos(radians('"+mylat+"')) * cos(radians(latitude)) * cos(radians(longitude) - radians('"+mylgt+"')) + sin(radians('"+mylat+"')) * sin(radians(latitude)))) as decimal(7,2)) ) < 3", function(err, db){
                                             if(err){
-                                                throw err;
+                                                res.writeHead(404, {"Content-Type":"application/json"});
+                                                res.end(JSON.stringify(jsonData));
                                             }else {
                                                 var message = new gcm.Message();
                                                 var message = new gcm.Message({
@@ -311,17 +311,19 @@ exports.request = function(req, res){
 
                         connection.query('INSERT INTO request_list SET ?', post, function(err, db){
                             if(err){
-                                db_flag=false;
-                                throw err;
+                                res.writeHead(404, {"Content-Type":"application/json"});
+                                res.end(JSON.stringify(jsonData));
                             }else {
                                 connection.query("SELECT user_name from user where login_id = '"+login_id+"'", function(err, db){
                                     if(err){
-                                        throw err;
+                                        res.writeHead(404, {"Content-Type":"application/json"});
+                                        res.end(JSON.stringify(jsonData));
                                     }else{
                                         var uname = db[0].user_name;
                                         connection.query("SELECT token FROM authentication where login_id ='" + req.body.senior_id + "'", function(err, db){
                                             if(err){
-                                                throw err;
+                                                res.writeHead(404, {"Content-Type":"application/json"});
+                                                res.end(JSON.stringify(jsonData));
                                             }else {
                                                 var message = new gcm.Message();
                                                 var message = new gcm.Message({
