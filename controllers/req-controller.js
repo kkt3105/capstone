@@ -314,7 +314,7 @@ exports.request = function(req, res){
                                 db_flag=false;
                                 throw err;
                             }else {
-                                connection.query("SELECT user_name from user where login_id = '"+login_id+"'"){
+                                connection.query("SELECT user_name from user where login_id = '"+login_id+"'", function(err, db){
                                     if(err){
                                         throw err;
                                     }else{
@@ -350,7 +350,7 @@ exports.request = function(req, res){
                                             }
                                         });
                                     }
-                                }
+                                });
 
 
                                 db_flag=true;
