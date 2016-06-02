@@ -73,7 +73,7 @@ exports.sendHeartrateLog = function (req, res){
                                               delayWhileIdle: true,
                                               timeToLive: 3,
                                               data: {
-                                                  data: 'Gcm Receive Success'
+                                                  data: 'high2'
                                               }
                                           });
 
@@ -103,7 +103,7 @@ exports.sendHeartrateLog = function (req, res){
                                           var mylat=db[0].latitude;
                                           var mylgt=db[0].longitude;
 
-                                          connection.query("SELECT token FROM authentication A INNER JOIN user B ON A.login_id = B.login_id WHERE B.user_type = 'senior' and ( cast ((6371 * acos(cos(radians('"+mylat+"')) * cos(radians(latitude)) * cos(radians(longitude) - radians('"+mylgt+"')) + sin(radians('"+mylat+"')) * sin(radians(latitude)))) as decimal(7,2)) ) < 3", function(err, db){
+                                          connection.query("SELECT token FROM authentication A INNER JOIN user B ON A.login_id = B.login_id WHERE B.user_type = 'senior' and A.login_id != '"+req.body.senior_id+"' and ( cast ((6371 * acos(cos(radians('"+mylat+"')) * cos(radians(latitude)) * cos(radians(longitude) - radians('"+mylgt+"')) + sin(radians('"+mylat+"')) * sin(radians(latitude)))) as decimal(7,2)) ) < 3", function(err, db){
                                               if(err){
                                                   throw err;
                                               }else {
@@ -113,7 +113,7 @@ exports.sendHeartrateLog = function (req, res){
                                                       delayWhileIdle: true,
                                                       timeToLive: 3,
                                                       data: {
-                                                          data: 'Gcm Receive Success'
+                                                          data: 'high1'
                                                       }
                                                   });
 
