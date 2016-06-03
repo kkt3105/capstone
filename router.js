@@ -52,4 +52,6 @@ exports.route = function(app) {
 
   app.post('/Finish_Request', request.finishRequest);
   app.post('/Get_Signature', request.getSignature);
+
+  app.post('/TokenTest', member.isTokenExist);
 };

@@ -50,6 +50,26 @@ function randomValueBase64 (len) {
         .replace(/\+/g, '0')  // replace '+' with '0'
         .replace(/\//g, '0'); // replace '/' with '0'
 }
+exports.isTokenExist = function(req, res){
+    var jsonData = {};
+    connection.query("SELECT * FROM authentication where token = '" + req.body.token +"'", function(err, db, fields){
+        if(err) {
+            jsonData.status=false;
+            res.writeHead(404, {"Content-Type":"application/json"});
+            res.end(JSON.stringify(jsonData));
+        }else{
+            if(db.length > 0){
+                    jsonData.status=true;
+                    res.writeHead(200, {"Content-Type":"application/json"});
+                    res.end(JSON.stringify(jsonData));
+            }else{
+                jsonData.status=false;
+                res.writeHead(404, {"Content-Type":"application/json"});
+                res.end(JSON.stringify(jsonData));
+            }
+        }
+    });
+};
 
 exports.signOut = function(req, res){
 
