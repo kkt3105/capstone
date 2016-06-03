@@ -13,7 +13,7 @@ exports.sendHeartrateLog = function (req, res){
     var db_flag = false;
     var condition = false;
     var jsonData={};
-
+            console.log("Heartrate: " + req.body.heartrate);
             if( req.body.heartrate <=0 || req.body.heartrate > 999 ){
                     condition = false;
                     console.log('HR is out of range!');
