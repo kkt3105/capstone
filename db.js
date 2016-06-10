@@ -2,7 +2,7 @@
 var mysql = require('mysql');
 
 var connection = mysql.createConnection({
-  host : '59.187.203.140',
+  host : '127.0.0.1',
   user:'root',
   password:'kt20112094',
   database:'capstone_project'
